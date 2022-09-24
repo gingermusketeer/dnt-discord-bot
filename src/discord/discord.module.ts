@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DiscordService } from './discord.service';
-import { Client, GatewayIntentBits } from 'discord.js';
 import { ConfigModule } from '@nestjs/config';
+import { CabinModule } from 'src/cabin/cabin.module';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, CabinModule],
   providers: [DiscordService],
 })
 export class DiscordModule {}

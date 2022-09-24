@@ -2,19 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import * as cron from 'node-cron';
+import { CabinService } from 'src/cabin/cabin.service';
+import { convert } from 'html-to-text';
 
 @Injectable()
 export class DiscordService {
   private readonly client: Client;
   private task: cron.ScheduledTask;
-  constructor(configService: ConfigService) {
-    console.log('Created');
-
+  constructor(
+    configService: ConfigService,
+    private readonly cabinService: CabinService,
+  ) {
     this.client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
     this.client.on('ready', () => {
-      console.log(`Logged in as ${this.client.user?.tag}!`);
-      console.log(this.client.channels.cache.entries());
+      console.log('discord ready');
+      // console.log(`Logged in as ${this.client.user?.tag}!`);
+      // console.log(this.client.channels.cache.entries());
       if ('false' + 1 === 'true') {
         this.task = cron.schedule('* * * * *', this.onMinute);
       }
@@ -30,9 +34,6 @@ export class DiscordService {
     });
 
     this.client.login(configService.getOrThrow('DISCORD_TOKEN'));
-  }
-  getHello(): string {
-    return 'Hello World!';
   }
 
   onMinute = () => {
@@ -52,48 +53,22 @@ export class DiscordService {
       return;
     }
     if (channel.isTextBased()) {
+      const cabin = await this.cabinService.getRandomCabin();
+      console.log(cabin);
+      const text = convert(cabin.description);
+
+      const imageUrl = `https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/${cabin.media[0].uri}`;
       const embed = new EmbedBuilder()
         .setColor(0xd82d20)
-        .setTitle('Dagens Hytta - Geitungen fyr')
-        .setURL('https://ut.no/hytte/10386/geitungen-fyr')
-        // .setAuthor({
-        //   name: 'Some name',
-        //   iconURL: 'https://i.imgur.com/AfFp7pu.png',
-        //   url: 'https://discord.js.org',
-        // })
-        .setDescription(
-          'Unik overnatting på øya utenfor Skudeneshavn på Karmøy, som huser Geitungen fyr, som eneste bolig. Haugesund Turistforening driver fyrvokterboligen som turisthytte på linje med andre hytter som foreningen disponerer. Hytta er åpen i perioden 1. mai til 30. september. ',
-        )
+        .setTitle(`Dagens Hytta - ${cabin.name}`)
+        .setURL(`https://ut.no/hytte/${cabin.id}`)
+        .setDescription(text.split('\n')[0])
         .setThumbnail(
           'https://cdn.dnt.org/prod/sherpa/build/permanent/static/img/common/header-logo-part.png',
         )
-        // .addFields(
-        //   { name: 'Regular field title', value: 'Some value here' },
-        //   { name: '\u200B', value: '\u200B' },
-        //   {
-        //     name: 'Inline field title',
-        //     value: 'Some value here',
-        //     inline: true,
-        //   },
-        //   {
-        //     name: 'Inline field title',
-        //     value: 'Some value here',
-        //     inline: true,
-        //   },
-        // )
-        // .addFields({
-        //   name: 'Inline field title',
-        //   value: 'Some value here',
-        //   inline: true,
-        // })
-        .setImage(
-          'https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/cabins/eidlrui481lox0ittb8s',
-        )
+        .setImage(imageUrl)
         .setTimestamp();
-      // .setFooter({
-      //   text: 'Some footer text here',
-      //   iconURL: 'https://i.imgur.com/AfFp7pu.png',
-      // });
+
       channel.send({ embeds: [embed] });
     }
   }
