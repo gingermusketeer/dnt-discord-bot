@@ -8,6 +8,7 @@ jobs:
   build:
     name: Build Image
     runs-on: ubuntu-latest
+
     permissions:
       id-token: write
       contents: read
@@ -15,6 +16,9 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+
+      - name: Check if aws is installed
+        run: aws help
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
