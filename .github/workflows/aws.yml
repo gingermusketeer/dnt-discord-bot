@@ -17,13 +17,10 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Check if aws is installed
-        run: aws help
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: us-east-1
+          aws-region: eu-central-1
           role-to-assume: arn:aws:iam::195726551907:role/dnt-discord-bot-github-actions
 
       - name: Login to Amazon ECR
