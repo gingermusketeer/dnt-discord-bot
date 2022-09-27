@@ -8,4 +8,4 @@ COPY . .
 
 RUN npm run build
 
-CMD ["npm start:prod"]
+CMD ["node dist/main"]
