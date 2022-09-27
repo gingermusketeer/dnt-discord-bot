@@ -51,7 +51,7 @@ while read oldrev newrev refname; do
         fi
         set -e
         echo "Docker : run $containerName"
-        sudo docker run --name $containerName -d $runConfig $imageName:latest
+        sudo docker run --env-file ../dnt-discord-bot-env --name $containerName -d $runConfig $imageName:latest
 
         if [ $? -ne 0 ]; then
             echo "Docker : Run failed, aborting"
