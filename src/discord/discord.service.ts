@@ -17,12 +17,7 @@ export class DiscordService {
 
     this.client.on('ready', () => {
       console.log('discord ready');
-      // console.log(`Logged in as ${this.client.user?.tag}!`);
-      // console.log(this.client.channels.cache.entries());
-      if ('false' + 1 === 'true') {
-        this.task = cron.schedule('* * * * *', this.onMinute);
-      }
-      this.onMinute();
+      this.task = cron.schedule('0 8 * * *', this.on8am);
     });
 
     this.client.on('interactionCreate', async (interaction) => {
@@ -36,8 +31,8 @@ export class DiscordService {
     this.client.login(configService.getOrThrow('DISCORD_TOKEN'));
   }
 
-  onMinute = () => {
-    console.log('every minute');
+  on8am = () => {
+    console.log('on8am');
     this.sendMessage()
       .then(() => {
         console.log('Message sent');
