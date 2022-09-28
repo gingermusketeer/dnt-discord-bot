@@ -2,17 +2,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 
-import { CabinService } from 'src/cabin/cabin.service';
-import { convert } from 'html-to-text';
-
 @Injectable()
 export class DiscordService implements OnModuleInit {
   private client: Client;
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly cabinService: CabinService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
   async onModuleInit() {
     this.client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
