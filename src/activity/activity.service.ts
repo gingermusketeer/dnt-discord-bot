@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
+import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
 function cleanString(rawString: string | null) {
   rawString ??= '';
   return rawString.replace(/\s+/g, ' ').trim();
@@ -9,12 +10,15 @@ function cleanArray(strings: string[]) {
 }
 @Injectable()
 export class ActivityService implements OnModuleInit {
+  constructor(
+    private readonly activityDatabaseService: ActivityDatabaseService,
+  ) {}
   async onModuleInit() {
-    const links = await this.getActivityLinks();
-    const activityData = await Promise.all(
-      links.map((link) => this.getActivityData(link)),
-    );
-    console.log(activityData[activityData.length - 1]);
+    // const links = await this.getActivityLinks();
+    // const activityData = await Promise.all(
+    //   links.map((link) => this.getActivityData(link)),
+    // );
+    // await this.activityDatabaseService.upsertActivities(activityData);
   }
 
   async getActivityData(path: string) {
@@ -43,6 +47,7 @@ export class ActivityService implements OnModuleInit {
       };
     });
     return {
+      id: path.split('/').slice(-3).join('/'),
       url,
       type: cleanString(node.textContent),
       date: cleanString(date.textContent),
@@ -52,6 +57,7 @@ export class ActivityService implements OnModuleInit {
       descriptionNb: nb?.textContent?.trim(),
       descriptionEn: en?.textContent?.trim(),
       media,
+      updatedAt: new Date(),
     };
   }
 
