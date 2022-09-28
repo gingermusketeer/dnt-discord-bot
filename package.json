@@ -25,6 +25,7 @@
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@supabase/supabase-js": "^1.35.7",
     "discord.js": "^14.3.0",
     "html-to-text": "^8.2.1",
     "jsdom": "^20.0.0",
