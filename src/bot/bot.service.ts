@@ -29,9 +29,8 @@ export class BotService implements OnModuleInit {
   };
 
   async sendDailyCabin() {
-    const channelId = '1015984126651793458';
+    const channelId = '990712194842902635';
     const cabin = await this.cabinService.getRandomCabin();
-    console.log(cabin);
     const text = convert(cabin.description);
 
     const imageUrl = `https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/${cabin.media[0].uri}`;
