@@ -6,5 +6,6 @@ import { CabinModule } from 'src/cabin/cabin.module';
 @Module({
   imports: [ConfigModule, CabinModule],
   providers: [DiscordService],
+  exports: [DiscordService],
 })
 export class DiscordModule {}
