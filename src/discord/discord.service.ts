@@ -22,6 +22,7 @@ export class DiscordService implements OnModuleInit {
       }
     });
     await this.client.login(this.configService.getOrThrow('DISCORD_TOKEN'));
+    await this.getChannels();
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {
@@ -32,5 +33,15 @@ export class DiscordService implements OnModuleInit {
     }
 
     await channel.send({ embeds: [embed] });
+  }
+
+  async getChannels() {
+    const guild = await this.client.guilds.fetch('990712194842902629');
+    const channels = await guild.channels.fetch();
+    console.log(
+      Array.from(channels.entries()).map(([id, channel]) => {
+        return { name: channel?.name, id };
+      }),
+    );
   }
 }
