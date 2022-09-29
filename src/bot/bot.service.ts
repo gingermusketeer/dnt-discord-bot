@@ -38,7 +38,7 @@ export class BotService implements OnModuleInit {
       .setColor(0xd82d20)
       .setTitle(`Dagens Hytta - ${cabin.name}`)
       .setURL(`https://ut.no/hytte/${cabin.id}`)
-      .setDescription(text.split('\n')[0])
+      .setDescription(text.split('\n')[0] + '...')
       .setThumbnail(
         'https://cdn.dnt.org/prod/sherpa/build/permanent/static/img/common/header-logo-part.png',
       )
