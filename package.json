@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "TZ=UTC node --test --require ts-node/register ./src/**/*.test.ts "
+    "test": "TZ=UTC node --test --require ts-node/register ./src/**/*.test.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
