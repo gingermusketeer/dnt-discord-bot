@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
 import { Info, parseInfo } from './activity.parser';
-function cleanString(rawString: string | null) {
+function cleanString(rawString: string | null | undefined) {
   rawString ??= '';
   return rawString.replace(/\s+/g, ' ').trim();
 }
@@ -12,6 +12,7 @@ const ajv = new Ajv();
 
 type NewType = {
   id: string;
+  title: string;
   url: string;
   type: string;
   descriptionNb?: string;
@@ -23,6 +24,7 @@ type NewType = {
 const schema: JTDSchemaType<NewType> = {
   properties: {
     id: { type: 'string' },
+    title: { type: 'string' },
     url: { type: 'string' },
     type: { type: 'string' },
     media: {
@@ -83,6 +85,7 @@ export class ActivityService implements OnModuleInit {
 
     const nb = document.querySelector('.description span[data-dnt-lang="nb"]');
     const en = document.querySelector('.description span[data-dnt-lang="en"]');
+    const title = cleanString(document.querySelector('.title')?.textContent);
     const images = document.querySelectorAll('#carousel .item');
     const media = Array.from(images)
       .map((node) => {
@@ -101,6 +104,7 @@ export class ActivityService implements OnModuleInit {
     return {
       id: path.split('/').slice(-3).join('/'),
       url,
+      title,
       type: cleanString(node.textContent),
       descriptionNb: nb?.textContent?.trim(),
       descriptionEn: en?.textContent?.trim(),
