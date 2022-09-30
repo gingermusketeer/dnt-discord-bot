@@ -25,7 +25,7 @@ describe('parseInfo', () => {
         'Bergen og Hordaland Turlag',
         'fellestur BHT',
       ],
-      tourType: [
+      tripType: [
         'Fellestur',
         'Fottur',
         'Dntfjellsport',
@@ -46,9 +46,8 @@ describe('parseInfo', () => {
       endsAt: new Date('2022-09-30T11:00'),
       audience: ['Seniorer'],
       difficulty: 'Enkel',
-      tourType: [
+      tripType: [
         'Arrangement',
-        '',
         'Seniortrim',
         'Styrketrening',
         'Friluftstrim',

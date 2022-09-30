@@ -5,14 +5,14 @@ function cleanString(rawString: string | null) {
   return rawString.replace(/\s+/g, ' ').trim();
 }
 function cleanArray(strings: string[]) {
-  return strings.map(cleanString);
+  return strings.map(cleanString).filter((el) => el.length > 0);
 }
 
-type Info = {
+export type Info = {
   tripCode: string;
   tripArea: string[];
   organiser: string[];
-  tourType: string[];
+  tripType: string[];
   audience: string[];
   difficulty: string;
   endsAt: Date;
@@ -31,7 +31,6 @@ export function parseInfo(node: Element): Info {
       currentGroup.push(cleanString(element.textContent));
     }
   });
-
   const info: Info = groups.reduce((acc, [key, value]) => {
     if (!value) {
       return acc;
@@ -55,7 +54,7 @@ export function parseInfo(node: Element): Info {
         acc.audience = cleanArray(value.split(','));
         return acc;
       case 'Turtyper':
-        acc.tourType = cleanArray(value.split(','));
+        acc.tripType = cleanArray(value.split(','));
         return acc;
       case 'Arrangører':
         acc.organiser = cleanArray(value.split(','));
