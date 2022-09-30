@@ -15,8 +15,8 @@ export type Info = {
   tripType: string[];
   audience: string[];
   difficulty: string;
-  endsAt: Date;
-  startsAt?: Date;
+  endsAt: Date | null;
+  startsAt: Date | null;
 };
 
 export function parseInfo(node: Element): Info {
@@ -31,45 +31,55 @@ export function parseInfo(node: Element): Info {
       currentGroup.push(cleanString(element.textContent));
     }
   });
-  const info: Info = groups.reduce((acc, [key, value]) => {
+  const data: Info = {
+    tripCode: '',
+    tripArea: [],
+    organiser: [],
+    tripType: [],
+    audience: [],
+    difficulty: '',
+    endsAt: null,
+    startsAt: null,
+  };
+  groups.forEach(([key, value]) => {
     if (!value) {
-      return acc;
+      return;
     }
     switch (key) {
       case 'Fra dato':
-        acc.startsAt = parseNbDate(value, new Date())[0];
-        return acc;
+        data.startsAt = parseNbDate(value, new Date())[0];
+        return;
       case 'Til dato':
-        acc.endsAt = parseNbDate(value, new Date())[0];
-        return acc;
+        data.endsAt = parseNbDate(value, new Date())[0];
+        return;
       case 'Dato':
         const dates = parseNbDate(value, new Date());
-        acc.startsAt = dates[0];
-        acc.endsAt = dates[1];
-        return acc;
+        data.startsAt = dates[0];
+        data.endsAt = dates.at(1) ?? null;
+        return;
       case 'Vanskelighetsgrad':
-        acc.difficulty = value;
-        return acc;
+        data.difficulty = value;
+        return;
       case 'Passer spesielt for':
-        acc.audience = cleanArray(value.split(','));
-        return acc;
+        data.audience = cleanArray(value.split(','));
+        return;
       case 'Turtyper':
-        acc.tripType = cleanArray(value.split(','));
-        return acc;
+        data.tripType = cleanArray(value.split(','));
+        return;
       case 'Arrangører':
-        acc.organiser = cleanArray(value.split(','));
-        return acc;
+        data.organiser = cleanArray(value.split(','));
+        return;
       case 'Turområde':
-        acc.tripArea = cleanArray(value.split(',')).map((area) =>
+        data.tripArea = cleanArray(value.split(',')).map((area) =>
           area.replace(' (se kart)', ''),
         );
-        return acc;
+        return;
       case 'Turkode':
-        acc.tripCode = value;
-        return acc;
+        data.tripCode = value;
+        return;
     }
-    return acc;
-  }, {} as Info);
+    return;
+  }, data);
 
-  return info;
+  return data;
 }

@@ -6,9 +6,10 @@ function cleanString(rawString: string | null) {
   rawString ??= '';
   return rawString.replace(/\s+/g, ' ').trim();
 }
-function cleanArray(strings: string[]) {
-  return strings.map(cleanString);
-}
+
+import Ajv, { JTDSchemaType } from 'ajv/dist/jtd';
+const ajv = new Ajv();
+
 type NewType = {
   id: string;
   url: string;
@@ -19,24 +20,54 @@ type NewType = {
   updatedAt: Date;
 } & Info;
 
+const schema: JTDSchemaType<NewType> = {
+  properties: {
+    id: { type: 'string' },
+    url: { type: 'string' },
+    type: { type: 'string' },
+    media: {
+      elements: {
+        properties: { url: { type: 'string' }, caption: { type: 'string' } },
+      },
+    },
+    updatedAt: { type: 'timestamp' },
+    tripCode: { type: 'string' },
+    tripArea: { elements: { type: 'string' } },
+    organiser: { elements: { type: 'string' } },
+    tripType: { elements: { type: 'string' } },
+    audience: { elements: { type: 'string' } },
+    difficulty: { type: 'string' },
+    endsAt: { type: 'timestamp', nullable: true },
+    startsAt: { type: 'timestamp', nullable: true },
+  },
+  optionalProperties: {
+    descriptionEn: { type: 'string' },
+    descriptionNb: { type: 'string' },
+  },
+};
+
 @Injectable()
 export class ActivityService implements OnModuleInit {
   constructor(
     private readonly activityDatabaseService: ActivityDatabaseService,
   ) {}
   async onModuleInit() {
-    // const links = await this.getActivityLinks();
-    // const activityData = await Promise.all(
-    //   links.map((link) => this.getActivityData(link)),
-    // );
-    // console.log(
-    //   JSON.stringify(
-    //     activityData.map((el) => Object.keys(el)),
-    //     null,
-    //     2,
-    //   ),
-    // );
-    // await this.activityDatabaseService.upsertActivities(activityData);
+    const links = await this.getActivityLinks();
+    const activityData = await Promise.all(
+      links.map((link) => this.getActivityData(link)),
+    );
+    const validator = ajv.compile(schema);
+    const validData = activityData.filter((data) => {
+      return validator(data);
+    });
+    const invalidData = activityData.filter((data) => {
+      return !validator(data);
+    });
+    console.log(JSON.stringify(invalidData, null, 2));
+
+    const error = await this.activityDatabaseService.upsertActivities(
+      activityData,
+    );
   }
 
   async getActivityData(path: string): Promise<NewType> {

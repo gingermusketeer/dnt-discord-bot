@@ -18,5 +18,6 @@ export class ActivityDatabaseService implements OnModuleInit {
       .from('activities')
       .upsert(activities, {});
     console.log(data, error);
+    return error;
   }
 }
