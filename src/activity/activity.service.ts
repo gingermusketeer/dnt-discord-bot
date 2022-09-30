@@ -14,11 +14,11 @@ export class ActivityService implements OnModuleInit {
     private readonly activityDatabaseService: ActivityDatabaseService,
   ) {}
   async onModuleInit() {
-    // const links = await this.getActivityLinks();
-    // const activityData = await Promise.all(
-    //   links.map((link) => this.getActivityData(link)),
-    // );
-    // await this.activityDatabaseService.upsertActivities(activityData);
+    const links = await this.getActivityLinks();
+    const activityData = await Promise.all(
+      links.map((link) => this.getActivityData(link)),
+    );
+    await this.activityDatabaseService.upsertActivities(activityData);
   }
 
   async getActivityData(path: string) {
@@ -46,16 +46,19 @@ export class ActivityService implements OnModuleInit {
         caption: caption?.textContent ?? '',
       };
     });
+    const dateStr = cleanString(date.textContent);
+    console.log(dateStr);
     return {
       id: path.split('/').slice(-3).join('/'),
       url,
       type: cleanString(node.textContent),
-      date: cleanString(date.textContent),
+      date: dateStr,
       audience: cleanArray(audience.textContent?.split(',') ?? []),
       tripType: cleanArray(tripType.textContent?.split(',') ?? []),
       organiser: cleanArray(organiser.textContent?.split(',') ?? []),
       descriptionNb: nb?.textContent?.trim(),
       descriptionEn: en?.textContent?.trim(),
+      startsAt: new Date(),
       media,
       updatedAt: new Date(),
     };
