@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
+import { parseNbDate } from './activity.utils';
 function cleanString(rawString: string | null) {
   rawString ??= '';
   return rawString.replace(/\s+/g, ' ').trim();
@@ -47,7 +48,7 @@ export class ActivityService implements OnModuleInit {
       };
     });
     const dateStr = cleanString(date.textContent);
-    console.log(dateStr);
+    const [startsAt, endsAt] = parseNbDate(dateStr, new Date());
     return {
       id: path.split('/').slice(-3).join('/'),
       url,
@@ -58,7 +59,8 @@ export class ActivityService implements OnModuleInit {
       organiser: cleanArray(organiser.textContent?.split(',') ?? []),
       descriptionNb: nb?.textContent?.trim(),
       descriptionEn: en?.textContent?.trim(),
-      startsAt: new Date(),
+      startsAt,
+      endsAt,
       media,
       updatedAt: new Date(),
     };
