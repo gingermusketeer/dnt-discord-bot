@@ -46,6 +46,9 @@ describe('parseInfo', () => {
       endsAt: new Date('2022-09-30T11:00'),
       audience: ['Seniorer'],
       difficulty: 'Enkel',
+      organiser: [],
+      tripArea: ['Oslomarka'],
+      tripCode: 'Friluftstrimmen',
       tripType: [
         'Arrangement',
         'Seniortrim',
@@ -53,8 +56,21 @@ describe('parseInfo', () => {
         'Friluftstrim',
         'Jordal',
       ],
-      tripArea: ['Oslomarka'],
-      tripCode: 'Friluftstrimmen',
+    });
+  });
+
+  it('parses something tours', () => {
+    const data = readFileSync('src/activity/examples/info-3.html', 'utf8');
+    const result = parseInfo(getNode(data));
+    assert.deepEqual(result, {
+      audience: ['Voksne', 'Ungdom', 'Fjellsportinteresserte'],
+      difficulty: 'Enkel',
+      endsAt: null,
+      organiser: [],
+      startsAt: new Date('2022-09-30T18:00:00.000Z'),
+      tripArea: [],
+      tripCode: '',
+      tripType: [],
     });
   });
 });

@@ -22,5 +22,8 @@ describe('parsing dates', () => {
         new Date('2022-12-06T20:00:00.000Z'),
       ],
     );
+    assert.deepEqual(parseNbDate('6. desember', referenceDate), [
+      new Date('2022-12-06T00:00:00.000Z'),
+    ]);
   });
 });

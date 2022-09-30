@@ -15,7 +15,8 @@ const months = [
 
 export function parseTime(str: string, date: Date) {
   const [hrs, minutes] = str.split(':');
-  date.setHours(parseInt(hrs), parseInt(minutes), 0, 0);
+
+  date.setHours(parseInt(hrs ?? '0'), parseInt(minutes ?? '0'), 0, 0);
 }
 
 export function parseNbDate(str: string, now: Date) {
@@ -24,7 +25,11 @@ export function parseNbDate(str: string, now: Date) {
   const [day, month, times] = str.split('.');
   date.setDate(parseInt(day));
   date.setMonth(months.findIndex((m) => month.includes(m)));
-  const [start, end] = times.split('-');
+  if (!times) {
+    date.setHours(0, 0, 0, 0);
+    return [date];
+  }
+  const [start, end] = (times ?? '').split('-');
   parseTime(start, date);
   if (!end) {
     return [date];

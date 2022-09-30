@@ -54,14 +54,16 @@ export class ActivityService implements OnModuleInit {
     private readonly activityDatabaseService: ActivityDatabaseService,
   ) {}
   async onModuleInit() {
-    const links = await this.getActivityLinks();
-    const activityData = await Promise.all(
-      links.map((link) => this.getActivityData(link)),
+    const links = await this.getActivityLinks(
+      'https://www.dnt.no/aktiviteter/',
     );
+    const activityData = [];
+    console.dir(links);
+    for (const link of links) {
+      console.dir(link);
+      activityData.push(await this.getActivityData(link, 'https://www.dnt.no'));
+    }
     const validator = ajv.compile(schema);
-    const validData = activityData.filter((data) => {
-      return validator(data);
-    });
     const invalidData = activityData.filter((data) => {
       return !validator(data);
     });
@@ -72,8 +74,9 @@ export class ActivityService implements OnModuleInit {
     );
   }
 
-  async getActivityData(path: string): Promise<NewType> {
-    const url = 'https://ung.dntoslo.no' + path;
+  async getActivityData(path: string, base: string): Promise<NewType> {
+    const url = path.includes('http') ? path : base + path;
+    console.log('url is', url);
     const html = await this.makeRequest(url);
     const {
       window: { document },
@@ -114,8 +117,8 @@ export class ActivityService implements OnModuleInit {
     };
   }
 
-  async getActivityLinks() {
-    const data = await this.makeRequest('https://ung.dntoslo.no/aktiviteter/');
+  async getActivityLinks(url: string) {
+    const data = await this.makeRequest(url);
     const {
       window: { document },
     } = new JSDOM(data);
@@ -125,6 +128,7 @@ export class ActivityService implements OnModuleInit {
   }
 
   async makeRequest(url: string) {
+    console.log(url);
     const response = await fetch(url);
     return await response.text();
   }
