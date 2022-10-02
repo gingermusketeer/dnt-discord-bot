@@ -8,7 +8,7 @@ export class ActivityDatabaseService implements OnModuleInit {
   constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
-    const supabaseUrl = 'https://kculxjfjdbvokpnwcxhr.supabase.co';
+    const supabaseUrl = this.configService.getOrThrow('SUPABASE_URL');
     const supabaseKey = this.configService.getOrThrow('SUPABASE_KEY');
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }

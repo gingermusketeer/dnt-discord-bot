@@ -33,7 +33,9 @@ export class BotService implements OnModuleInit {
   };
 
   async sendDailyCabin() {
-    const channelId = '1026168854923182170';
+    const channelId = this.configService.getOrThrow(
+      'DISCORD_DAILY_CABIN_CHANNEL_ID',
+    );
     const cabin = await this.cabinService.getRandomCabin();
     const text = convert(cabin.description);
 
