@@ -1,55 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
-import { Info, parseInfo } from './activity.parser';
+import { extractActivityData } from './activity.parser';
 import * as cron from 'node-cron';
 
-function cleanString(rawString: string | null | undefined) {
-  rawString ??= '';
-  return rawString.replace(/\s+/g, ' ').trim();
-}
-
-import Ajv, { JTDSchemaType } from 'ajv/dist/jtd';
 import { ConfigService } from '@nestjs/config';
-const ajv = new Ajv();
-
-type NewType = {
-  id: string;
-  title: string;
-  url: string;
-  type: string;
-  descriptionNb?: string;
-  descriptionEn?: string;
-  media: { url: string; caption: string }[];
-  updatedAt: Date;
-} & Info;
-
-const schema: JTDSchemaType<NewType> = {
-  properties: {
-    id: { type: 'string' },
-    title: { type: 'string' },
-    url: { type: 'string' },
-    type: { type: 'string' },
-    media: {
-      elements: {
-        properties: { url: { type: 'string' }, caption: { type: 'string' } },
-      },
-    },
-    updatedAt: { type: 'timestamp' },
-    tripCode: { type: 'string' },
-    tripArea: { elements: { type: 'string' } },
-    organiser: { elements: { type: 'string' } },
-    tripType: { elements: { type: 'string' } },
-    audience: { elements: { type: 'string' } },
-    difficulty: { type: 'string' },
-    endsAt: { type: 'timestamp', nullable: true },
-    startsAt: { type: 'timestamp', nullable: true },
-  },
-  optionalProperties: {
-    descriptionEn: { type: 'string' },
-    descriptionNb: { type: 'string' },
-  },
-};
+import Ajv from 'ajv/dist/jtd';
+import { ActivityData, ActivityDataSchema } from './activity.interface';
 
 @Injectable()
 export class ActivityService implements OnModuleInit {
@@ -74,7 +31,8 @@ export class ActivityService implements OnModuleInit {
 
   async fetchAndUploadActivityData() {
     const activityData = await this.fetchAllActivityData();
-    const validator = ajv.compile(schema);
+    const ajv = new Ajv();
+    const validator = ajv.compile(ActivityDataSchema);
     const invalidData = activityData.filter((data) => {
       return !validator(data);
     });
@@ -114,45 +72,12 @@ export class ActivityService implements OnModuleInit {
     return activityData;
   }
 
-  async getActivityData(url: string): Promise<NewType> {
+  async getActivityData(url: string): Promise<ActivityData> {
     const html = await this.makeRequest(url);
     const {
       window: { document },
     } = new JSDOM(html);
-    const node = document.querySelector('.aktivitet-info .heading');
-    if (!node) {
-      throw new Error('No meta data');
-    }
-
-    const nb = document.querySelector('.description span[data-dnt-lang="nb"]');
-    const en = document.querySelector('.description span[data-dnt-lang="en"]');
-    const title = cleanString(document.querySelector('.title')?.textContent);
-    const images = document.querySelectorAll('#carousel .item');
-    const media = Array.from(images)
-      .map((node) => {
-        const img = node.querySelector('img');
-        const caption = node.querySelector('.carousel-caption');
-        if (!img) {
-          return;
-        }
-        return {
-          url: img.src,
-          caption: caption?.textContent ?? '',
-        };
-      })
-      .filter((val) => val) as NewType['media'];
-    const info = parseInfo(document.body);
-    return {
-      id: url.split('/').slice(-3).join('/'),
-      url,
-      title,
-      type: cleanString(node.textContent),
-      descriptionNb: nb?.textContent?.trim(),
-      descriptionEn: en?.textContent?.trim(),
-      media,
-      updatedAt: new Date(),
-      ...info,
-    };
+    return extractActivityData(url, document);
   }
 
   async getActivityLinks(url: string) {

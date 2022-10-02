@@ -1,23 +1,13 @@
+import { ActivityData, Info } from './activity.interface';
 import { parseNbDate } from './activity.utils';
 
-function cleanString(rawString: string | null) {
+function cleanString(rawString?: string | null) {
   rawString ??= '';
   return rawString.replace(/\s+/g, ' ').trim();
 }
 function cleanArray(strings: string[]) {
   return strings.map(cleanString).filter((el) => el.length > 0);
 }
-
-export type Info = {
-  tripCode: string;
-  tripArea: string[];
-  organiser: string[];
-  tripType: string[];
-  audience: string[];
-  difficulty: string;
-  endsAt: Date | null;
-  startsAt: Date | null;
-};
 
 export function parseInfo(node: Element): Info {
   const listNode = node.querySelector('.aktivitet-info dl');
@@ -82,4 +72,41 @@ export function parseInfo(node: Element): Info {
   }, data);
 
   return data;
+}
+
+export function extractActivityData(url: string, document: Document) {
+  const node = document.querySelector('.aktivitet-info .heading');
+  if (!node) {
+    throw new Error('No meta data');
+  }
+
+  const nb = document.querySelector('.description span[data-dnt-lang="nb"]');
+  const en = document.querySelector('.description span[data-dnt-lang="en"]');
+  const title = cleanString(document.querySelector('.title')?.textContent);
+  const images = document.querySelectorAll('#carousel .item');
+  const media = Array.from(images)
+    .map((node) => {
+      const img = node.querySelector('img');
+      const caption = node.querySelector('.carousel-caption');
+      if (!img) {
+        return;
+      }
+      return {
+        url: img.src,
+        caption: caption?.textContent ?? '',
+      };
+    })
+    .filter((val) => val) as ActivityData['media'];
+  const info = parseInfo(document.body);
+  return {
+    id: url.split('/').slice(-3).join('/'),
+    url,
+    title,
+    type: cleanString(node.textContent),
+    descriptionNb: nb?.textContent?.trim(),
+    descriptionEn: en?.textContent?.trim(),
+    media,
+    updatedAt: new Date(),
+    ...info,
+  };
 }
