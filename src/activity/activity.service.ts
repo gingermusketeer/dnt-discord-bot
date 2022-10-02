@@ -54,14 +54,29 @@ export class ActivityService implements OnModuleInit {
     private readonly activityDatabaseService: ActivityDatabaseService,
   ) {}
   async onModuleInit() {
-    const links = await this.getActivityLinks(
+    const numPages = await this.getActivityPages(
       'https://www.dnt.no/aktiviteter/',
     );
+    console.log(`Fetching data for ${numPages} pages`);
+    let currentPage = numPages - 2;
+    let links: string[] = [];
+    while (currentPage <= numPages) {
+      links = links.concat(
+        await this.getActivityLinks(
+          'https://www.dnt.no/aktiviteter/?page=' + currentPage,
+        ),
+      );
+      currentPage += 1;
+    }
     const activityData = [];
-    console.dir(links);
-    for (const link of links) {
-      console.dir(link);
-      activityData.push(await this.getActivityData(link, 'https://www.dnt.no'));
+    const uniqueLinks = new Set(links);
+    console.log(`Fetching data for ${uniqueLinks.size} activities`);
+    for (const link of uniqueLinks) {
+      try {
+        activityData.push(await this.getActivityData(link));
+      } catch (error) {
+        console.log(error);
+      }
     }
     const validator = ajv.compile(schema);
     const invalidData = activityData.filter((data) => {
@@ -72,11 +87,10 @@ export class ActivityService implements OnModuleInit {
     const error = await this.activityDatabaseService.upsertActivities(
       activityData,
     );
+    console.log(error);
   }
 
-  async getActivityData(path: string, base: string): Promise<NewType> {
-    const url = path.includes('http') ? path : base + path;
-    console.log('url is', url);
+  async getActivityData(url: string): Promise<NewType> {
     const html = await this.makeRequest(url);
     const {
       window: { document },
@@ -105,7 +119,7 @@ export class ActivityService implements OnModuleInit {
       .filter((val) => val) as NewType['media'];
     const info = parseInfo(document.body);
     return {
-      id: path.split('/').slice(-3).join('/'),
+      id: url.split('/').slice(-3).join('/'),
       url,
       title,
       type: cleanString(node.textContent),
@@ -123,8 +137,35 @@ export class ActivityService implements OnModuleInit {
       window: { document },
     } = new JSDOM(data);
     const nodes = document.querySelectorAll('.aktivitet-item');
-    const links = Array.from(nodes).map(({ href }: any) => href);
+    const links = Array.from(nodes)
+      .map(({ href }: any) => href)
+      .map((path) => {
+        if (!path.startsWith('http')) {
+          const urlObject = new URL(url);
+          urlObject.pathname = path;
+          urlObject.search = '';
+          path = urlObject.toString();
+        }
+        return path;
+      });
     return links;
+  }
+
+  async getActivityPages(url: string) {
+    const data = await this.makeRequest(url);
+    const {
+      window: { document },
+    } = new JSDOM(data);
+    const nodes = document.querySelectorAll('.aktivitet-item');
+    const values = Array.from(
+      document.querySelectorAll('.pagination a[data-page]'),
+    )
+      .map((el: HTMLAnchorElement) => {
+        return el.dataset.page;
+      })
+      .map((str) => parseInt(str ?? '', 10))
+      .filter((num) => !Number.isNaN(num));
+    return Math.max(...values);
   }
 
   async makeRequest(url: string) {
