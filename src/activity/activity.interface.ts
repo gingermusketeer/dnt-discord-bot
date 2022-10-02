@@ -17,6 +17,9 @@ export type ActivityData = {
   difficulty: string;
   endsAt: Date | null;
   startsAt: Date | null;
+  signUpAt?: Date;
+  requiresSignUp: boolean;
+  cancelled: boolean;
 };
 
 export type Info = Pick<
@@ -51,9 +54,12 @@ export const ActivityDataSchema: JTDSchemaType<ActivityData> = {
     difficulty: { type: 'string' },
     endsAt: { type: 'timestamp', nullable: true },
     startsAt: { type: 'timestamp', nullable: true },
+    requiresSignUp: { type: 'boolean' },
+    cancelled: { type: 'boolean' },
   },
   optionalProperties: {
     descriptionEn: { type: 'string' },
     descriptionNb: { type: 'string' },
+    signUpAt: { type: 'timestamp' },
   },
 };

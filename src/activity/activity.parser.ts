@@ -9,6 +9,33 @@ function cleanArray(strings: string[]) {
   return strings.map(cleanString).filter((el) => el.length > 0);
 }
 
+function extractSignUpAt(document: Document): string | undefined {
+  return (
+    document.querySelector('.signup.signup-countdown')?.textContent ?? undefined
+  );
+}
+
+function parseSignUpAt(str: string = ''): Date | undefined {
+  const dateStr = str.replace('Påmelding fra', '');
+  if (dateStr) {
+    return parseNbDateToUtc(dateStr)[0];
+  }
+}
+
+function extractRequiresSignUp(document: Document) {
+  return !!document.querySelector('.well.signup');
+}
+
+function extractAlerts(document: Document): string[] {
+  return Array.from(document.querySelectorAll('.alert'))
+    .map(({ textContent }) => textContent)
+    .filter((str): str is string => !!str);
+}
+
+function isCanceled(alerts: string[]) {
+  return alerts.some((str) => str.toLowerCase().includes('avlyst'));
+}
+
 export function parseInfo(node: Element): Info {
   const listNode = node.querySelector('.aktivitet-info dl');
   const groups: [string, string?][] = [];
@@ -74,7 +101,10 @@ export function parseInfo(node: Element): Info {
   return data;
 }
 
-export function extractActivityData(url: string, document: Document) {
+export function extractActivityData(
+  url: string,
+  document: Document,
+): ActivityData {
   const node = document.querySelector('.aktivitet-info .heading');
   if (!node) {
     throw new Error('No meta data');
@@ -97,6 +127,7 @@ export function extractActivityData(url: string, document: Document) {
       };
     })
     .filter((val) => val) as ActivityData['media'];
+  const signUpAt = parseSignUpAt(extractSignUpAt(document));
   const info = parseInfo(document.body);
   return {
     id: url.split('/').slice(-3).join('/'),
@@ -106,6 +137,9 @@ export function extractActivityData(url: string, document: Document) {
     descriptionNb: nb?.textContent?.trim(),
     descriptionEn: en?.textContent?.trim(),
     media,
+    signUpAt,
+    cancelled: isCanceled(extractAlerts(document)),
+    requiresSignUp: extractRequiresSignUp(document),
     updatedAt: new Date(),
     ...info,
   };
