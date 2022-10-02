@@ -38,8 +38,11 @@ type DateConfig = {
 
 function parseNbDate(str: string): [DateConfig] | [DateConfig, DateConfig] {
   const [day, month, times] = str.split('.');
+  // If we have a year then it is included in the month
+  const year = month.replace(/\D+/, '');
+  const yearNum = parseInt(year);
   const beginningOfDay: DateConfig = {
-    year: 2022,
+    year: Number.isNaN(yearNum) ? new Date().getFullYear() : yearNum,
     day: parseInt(day),
     month: months.findIndex((m) => month.includes(m)) + 1,
     hours: 0,
@@ -66,14 +69,12 @@ function padWithZero(number: number): string {
 
 export function parseNbDateToUtc(str: string) {
   const dates = parseNbDate(str);
-  console.dir(dates);
   return dates.map((dateConfig) => {
     const strWithoutZone = `${dateConfig.year}-${padWithZero(
       dateConfig.month,
     )}-${padWithZero(dateConfig.day)}T${padWithZero(
       dateConfig.hours,
     )}:${padWithZero(dateConfig.minutes)}`;
-    console.log(strWithoutZone);
     return zonedTimeToUtc(strWithoutZone, zone);
   });
 }
