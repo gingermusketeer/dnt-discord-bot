@@ -4,17 +4,21 @@ import * as cron from 'node-cron';
 import { convert } from 'html-to-text';
 import { EmbedBuilder } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class BotService implements OnModuleInit {
   constructor(
+    private readonly configService: ConfigService,
     private readonly discordService: DiscordService,
     private readonly cabinService: CabinService,
   ) {}
   private task: cron.ScheduledTask;
   async onModuleInit() {
-    this.task = cron.schedule('0 8 * * *', this.on8am);
-    console.log('setup 8am cabin message');
+    if (this.configService.get('NODE_ENV') === 'production') {
+      this.task = cron.schedule('0 8 * * *', this.on8am);
+      console.log('setup 8am cabin message');
+    }
   }
 
   on8am = () => {

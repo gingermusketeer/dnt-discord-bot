@@ -2,12 +2,15 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
 import { Info, parseInfo } from './activity.parser';
+import * as cron from 'node-cron';
+
 function cleanString(rawString: string | null | undefined) {
   rawString ??= '';
   return rawString.replace(/\s+/g, ' ').trim();
 }
 
 import Ajv, { JTDSchemaType } from 'ajv/dist/jtd';
+import { ConfigService } from '@nestjs/config';
 const ajv = new Ajv();
 
 type NewType = {
@@ -50,15 +53,45 @@ const schema: JTDSchemaType<NewType> = {
 
 @Injectable()
 export class ActivityService implements OnModuleInit {
+  private task: cron.ScheduledTask;
   constructor(
+    private readonly configService: ConfigService,
     private readonly activityDatabaseService: ActivityDatabaseService,
   ) {}
   async onModuleInit() {
+    if (this.configService.get('NODE_ENV') === 'production') {
+      this.task = cron.schedule('0 10 * * *', this.on10am);
+      console.log('setup 10am activity scrapping');
+    }
+  }
+
+  on10am() {
+    console.log('starting 10am activity scrapping');
+    this.fetchAndUploadActivityData().catch((error) => {
+      console.error('fetchAndUploadActivityData failed with error', error);
+    });
+  }
+
+  async fetchAndUploadActivityData() {
+    const activityData = await this.fetchAllActivityData();
+    const validator = ajv.compile(schema);
+    const invalidData = activityData.filter((data) => {
+      return !validator(data);
+    });
+    console.log(JSON.stringify(invalidData, null, 2));
+
+    const error = await this.activityDatabaseService.upsertActivities(
+      activityData,
+    );
+    console.log(error);
+  }
+
+  async fetchAllActivityData() {
     const numPages = await this.getActivityPages(
       'https://www.dnt.no/aktiviteter/',
     );
     console.log(`Fetching data for ${numPages} pages`);
-    let currentPage = numPages - 2;
+    let currentPage = 0;
     let links: string[] = [];
     while (currentPage <= numPages) {
       links = links.concat(
@@ -78,16 +111,7 @@ export class ActivityService implements OnModuleInit {
         console.log(error);
       }
     }
-    const validator = ajv.compile(schema);
-    const invalidData = activityData.filter((data) => {
-      return !validator(data);
-    });
-    console.log(JSON.stringify(invalidData, null, 2));
-
-    const error = await this.activityDatabaseService.upsertActivities(
-      activityData,
-    );
-    console.log(error);
+    return activityData;
   }
 
   async getActivityData(url: string): Promise<NewType> {
