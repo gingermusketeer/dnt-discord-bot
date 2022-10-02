@@ -31,7 +31,22 @@ export class ActivityService implements OnModuleInit {
   }
 
   async fetchAndUploadActivityData() {
-    const activityData = await this.fetchAllActivityData();
+    const numPages = await this.getActivityPages(
+      'https://www.dnt.no/aktiviteter/',
+    );
+    console.log(`Fetching data for ${numPages} pages`);
+    let currentPage = 14;
+    while (currentPage <= numPages) {
+      const links = await this.getActivityLinks(
+        'https://www.dnt.no/aktiviteter/?page=' + currentPage,
+      );
+      const activityData = await this.fetchAllActivityData(links);
+      await this.uploadData(activityData);
+      currentPage += 1;
+    }
+  }
+
+  async uploadData(activityData: ActivityData[]) {
     const ajv = new Ajv();
     const validator = ajv.compile(ActivityDataSchema);
     const invalidData = activityData.filter((data) => {
@@ -45,21 +60,7 @@ export class ActivityService implements OnModuleInit {
     console.log(error);
   }
 
-  async fetchAllActivityData() {
-    const numPages = await this.getActivityPages(
-      'https://www.dnt.no/aktiviteter/',
-    );
-    console.log(`Fetching data for ${numPages} pages`);
-    let currentPage = numPages - 2;
-    let links: string[] = [];
-    while (currentPage <= numPages) {
-      links = links.concat(
-        await this.getActivityLinks(
-          'https://www.dnt.no/aktiviteter/?page=' + currentPage,
-        ),
-      );
-      currentPage += 1;
-    }
+  async fetchAllActivityData(links: string[]) {
     const activityData = [];
     const uniqueLinks = new Set(links);
     console.log(`Fetching data for ${uniqueLinks.size} activities`);

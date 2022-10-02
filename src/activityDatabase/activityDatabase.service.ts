@@ -14,10 +14,9 @@ export class ActivityDatabaseService implements OnModuleInit {
   }
 
   async upsertActivities(activities: object[]) {
-    const { data, error } = await this.supabase
+    const { error } = await this.supabase
       .from('activities')
       .upsert(activities, {});
-    console.log(data, error);
     return error;
   }
 }
