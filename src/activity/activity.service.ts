@@ -35,7 +35,7 @@ export class ActivityService implements OnModuleInit {
       'https://www.dnt.no/aktiviteter/',
     );
     console.log(`Fetching data for ${numPages} pages`);
-    let currentPage = 14;
+    let currentPage = 1;
     while (currentPage <= numPages) {
       const links = await this.getActivityLinks(
         'https://www.dnt.no/aktiviteter/?page=' + currentPage,

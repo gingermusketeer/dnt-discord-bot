@@ -27,13 +27,13 @@ export class BotService implements OnModuleInit {
     if (this.configService.get('NODE_ENV') === 'production') {
       this.task = cron.schedule('0 8 * * *', this.on8am);
       console.log('setup 8am cabin message');
+      await this.activityDatabaseService.registerEventListener(
+        'activities',
+        'INSERT',
+        this.onNewEvent,
+      );
+      console.log('setup handler for new activities');
     }
-    await this.activityDatabaseService.registerEventListener(
-      'activities',
-      'INSERT',
-      this.onNewEvent,
-    );
-    console.log('setup handler for new activities');
   }
 
   onNewEvent = (data: SupabaseRealtimePayload<ActivityData>) => {
