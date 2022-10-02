@@ -1,6 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import {
+  createClient,
+  SupabaseClient,
+  SupabaseRealtimePayload,
+} from '@supabase/supabase-js';
 
 @Injectable()
 export class ActivityDatabaseService implements OnModuleInit {
@@ -18,5 +22,13 @@ export class ActivityDatabaseService implements OnModuleInit {
       .from('activities')
       .upsert(activities, {});
     return error;
+  }
+
+  async registerEventListener(
+    table: 'activities',
+    event: 'INSERT',
+    onNewEvent: (data: SupabaseRealtimePayload<any>) => void,
+  ) {
+    await this.supabase.from(table).on(event, onNewEvent).subscribe();
   }
 }

@@ -5,21 +5,55 @@ import { convert } from 'html-to-text';
 import { EmbedBuilder } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
 import { ConfigService } from '@nestjs/config';
+import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
+import { SupabaseRealtimePayload } from '@supabase/supabase-js';
+import { ActivityData } from 'src/activity/activity.interface';
 
 @Injectable()
 export class BotService implements OnModuleInit {
+  private readonly newActivityChannelId: string;
   constructor(
     private readonly configService: ConfigService,
     private readonly discordService: DiscordService,
     private readonly cabinService: CabinService,
-  ) {}
+    private readonly activityDatabaseService: ActivityDatabaseService,
+  ) {
+    this.newActivityChannelId = this.configService.getOrThrow(
+      'DISCORD_BOT_TESTING_CHANNEL_ID',
+    );
+  }
   private task: cron.ScheduledTask;
   async onModuleInit() {
     if (this.configService.get('NODE_ENV') === 'production') {
       this.task = cron.schedule('0 8 * * *', this.on8am);
       console.log('setup 8am cabin message');
     }
+    await this.activityDatabaseService.registerEventListener(
+      'activities',
+      'INSERT',
+      this.onNewEvent,
+    );
+    console.log('setup handler for new activities');
   }
+
+  onNewEvent = (data: SupabaseRealtimePayload<ActivityData>) => {
+    const imageUrl: string | undefined = data.new.media[0]?.url;
+    const embed = new EmbedBuilder()
+      .setColor(0xd82d20)
+      .setTitle(`Noe nytt - ${data.new.title}`)
+      .setURL(data.new.url)
+      .setDescription(data.new.descriptionNb?.split('\n')[0] + '...')
+      .setThumbnail(
+        'https://cdn.dnt.org/prod/sherpa/build/permanent/static/img/common/header-logo-part.png',
+      )
+      .setImage(imageUrl)
+      .setTimestamp();
+    this.discordService
+      .sendMessage(this.newActivityChannelId, embed)
+      .catch((error) => {
+        console.error('failed to send onNewEvent message', error);
+      });
+  };
 
   on8am = () => {
     console.log('on8am');
