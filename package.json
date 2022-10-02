@@ -15,7 +15,8 @@
     "start:prod": "node dist/main",
     "start:repl": "npm run start -- --entryFile repl",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "TZ=UTC node --test --require ts-node/register ./src/**/*.test.ts"
+    "test": "TZ=UTC node --test --require ts-node/register ./src/**/*.test.ts",
+    "test:single": "TZ=UTC node --require ts-node/register "
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

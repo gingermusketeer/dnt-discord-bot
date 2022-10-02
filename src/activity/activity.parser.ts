@@ -1,5 +1,5 @@
 import { ActivityData, Info } from './activity.interface';
-import { parseNbDate } from './activity.utils';
+import { parseNbDateToUtc } from './activity.utils';
 
 function cleanString(rawString?: string | null) {
   rawString ??= '';
@@ -37,13 +37,13 @@ export function parseInfo(node: Element): Info {
     }
     switch (key) {
       case 'Fra dato':
-        data.startsAt = parseNbDate(value, new Date())[0];
+        data.startsAt = parseNbDateToUtc(value)[0];
         return;
       case 'Til dato':
-        data.endsAt = parseNbDate(value, new Date())[0];
+        data.endsAt = parseNbDateToUtc(value)[0];
         return;
       case 'Dato':
-        const dates = parseNbDate(value, new Date());
+        const dates = parseNbDateToUtc(value);
         data.startsAt = dates[0];
         data.endsAt = dates.at(1) ?? null;
         return;

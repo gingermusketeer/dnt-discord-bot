@@ -1,3 +1,8 @@
+import { zonedTimeToUtc } from 'date-fns-tz';
+import { set, format } from 'date-fns';
+
+const zone = 'Europe/Oslo';
+
 const months = [
   'januar',
   'februar',
@@ -13,29 +18,62 @@ const months = [
   'desember',
 ];
 
-export function parseTime(str: string, date: Date) {
+export function parseTime(str: string, date: DateConfig) {
   const [hrs, minutes] = str.split(':');
 
-  date.setHours(parseInt(hrs ?? '0'), parseInt(minutes ?? '0'), 0, 0);
+  return {
+    ...date,
+    hours: parseInt(hrs ?? '0'),
+    minutes: parseInt(minutes ?? '0'),
+  };
 }
 
-export function parseNbDate(str: string, now: Date) {
-  const date = new Date(now);
-  date.setMilliseconds(0);
+type DateConfig = {
+  minutes: number;
+  hours: number;
+  day: number;
+  month: number;
+  year: number;
+};
+
+function parseNbDate(str: string): [DateConfig] | [DateConfig, DateConfig] {
   const [day, month, times] = str.split('.');
-  date.setDate(parseInt(day));
-  date.setMonth(months.findIndex((m) => month.includes(m)));
+  const beginningOfDay: DateConfig = {
+    year: 2022,
+    day: parseInt(day),
+    month: months.findIndex((m) => month.includes(m)) + 1,
+    hours: 0,
+    minutes: 0,
+  };
   if (!times) {
-    date.setHours(0, 0, 0, 0);
-    return [date];
+    return [beginningOfDay];
   }
   const [start, end] = (times ?? '').split('-');
-  parseTime(start, date);
+  const startDate = parseTime(start, beginningOfDay);
   if (!end) {
-    return [date];
+    return [startDate];
   }
 
-  const endDate = new Date(date);
-  parseTime(end, endDate);
-  return [date, endDate];
+  return [startDate, parseTime(end, beginningOfDay)];
+}
+
+function padWithZero(number: number): string {
+  if (number > 9) {
+    return number.toString();
+  }
+  return `0${number}`;
+}
+
+export function parseNbDateToUtc(str: string) {
+  const dates = parseNbDate(str);
+  console.dir(dates);
+  return dates.map((dateConfig) => {
+    const strWithoutZone = `${dateConfig.year}-${padWithZero(
+      dateConfig.month,
+    )}-${padWithZero(dateConfig.day)}T${padWithZero(
+      dateConfig.hours,
+    )}:${padWithZero(dateConfig.minutes)}`;
+    console.log(strWithoutZone);
+    return zonedTimeToUtc(strWithoutZone, zone);
+  });
 }

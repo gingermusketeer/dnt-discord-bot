@@ -20,6 +20,7 @@ export class ActivityService implements OnModuleInit {
       this.task = cron.schedule('0 10 * * *', this.on10am);
       console.log('setup 10am activity scrapping');
     }
+    this.on10am();
   }
 
   on10am() {
@@ -49,7 +50,7 @@ export class ActivityService implements OnModuleInit {
       'https://www.dnt.no/aktiviteter/',
     );
     console.log(`Fetching data for ${numPages} pages`);
-    let currentPage = 0;
+    let currentPage = numPages - 2;
     let links: string[] = [];
     while (currentPage <= numPages) {
       links = links.concat(
