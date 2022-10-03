@@ -19,8 +19,8 @@ export class ActivityService implements OnModuleInit {
     if (this.configService.get('NODE_ENV') === 'production') {
       this.task = cron.schedule('0 10 * * *', this.on10am);
       console.log('setup 10am activity scrapping');
+      this.on10am();
     }
-    this.on10am();
   }
 
   on10am() {
