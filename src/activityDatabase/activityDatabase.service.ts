@@ -5,6 +5,8 @@ import {
   SupabaseClient,
   SupabaseRealtimePayload,
 } from '@supabase/supabase-js';
+import { ActivityData } from 'src/activity/activity.interface';
+import { groupByKeys } from './activityDatabase.utils';
 
 @Injectable()
 export class ActivityDatabaseService implements OnModuleInit {
@@ -17,11 +19,17 @@ export class ActivityDatabaseService implements OnModuleInit {
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
-  async upsertActivities(activities: object[]) {
-    const { error } = await this.supabase
-      .from('activities')
-      .upsert(activities, {});
-    return error;
+  async upsertActivities(activities: ActivityData[]) {
+    const groups = groupByKeys(activities);
+    const errors = [];
+    for (const group of groups) {
+      const { error } = await this.supabase
+        .from('activities')
+        .upsert(group, {});
+      errors.push(error);
+    }
+
+    return errors;
   }
 
   async registerEventListener(
