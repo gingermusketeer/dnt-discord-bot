@@ -7,9 +7,12 @@ import * as cron from 'node-cron';
 import { ConfigService } from '@nestjs/config';
 import Ajv from 'ajv/dist/jtd';
 import { ActivityData, ActivityDataSchema } from './activity.interface';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class ActivityService implements OnModuleInit {
+  private readonly logger = new Logger(ActivityService.name);
+
   private task: cron.ScheduledTask;
   constructor(
     private readonly configService: ConfigService,
@@ -18,14 +21,14 @@ export class ActivityService implements OnModuleInit {
   async onModuleInit() {
     if (this.configService.get('NODE_ENV') === 'production') {
       this.task = cron.schedule('0 10 * * *', this.on10am);
-      console.log('setup 10am activity scrapping');
+      this.logger.log('setup 10am activity scrapping');
     }
   }
 
   on10am() {
-    console.log('starting 10am activity scrapping');
+    this.logger.log('starting 10am activity scrapping');
     this.fetchAndUploadActivityData().catch((error) => {
-      console.error('fetchAndUploadActivityData failed with error', error);
+      this.logger.error('fetchAndUploadActivityData failed with error', error);
     });
   }
 
@@ -33,7 +36,7 @@ export class ActivityService implements OnModuleInit {
     const numPages = await this.getActivityPages(
       'https://www.dnt.no/aktiviteter/',
     );
-    console.log(`Fetching data for ${numPages} pages`);
+    this.logger.log(`Fetching data for ${numPages} pages`);
     let currentPage = 1;
     while (currentPage <= numPages) {
       const links = await this.getActivityLinks(
@@ -51,23 +54,23 @@ export class ActivityService implements OnModuleInit {
     const invalidData = activityData.filter((data) => {
       return !validator(data);
     });
-    console.log(JSON.stringify(invalidData, null, 2));
+    this.logger.log(JSON.stringify(invalidData, null, 2));
 
     const error = await this.activityDatabaseService.upsertActivities(
       activityData,
     );
-    console.log(error);
+    this.logger.log(error);
   }
 
   async fetchAllActivityData(links: string[]) {
     const activityData = [];
     const uniqueLinks = new Set(links);
-    console.log(`Fetching data for ${uniqueLinks.size} activities`);
+    this.logger.log(`Fetching data for ${uniqueLinks.size} activities`);
     for (const link of uniqueLinks) {
       try {
         activityData.push(await this.getActivityData(link));
       } catch (error) {
-        console.log(error);
+        this.logger.log(error);
       }
     }
     return activityData;
@@ -119,7 +122,7 @@ export class ActivityService implements OnModuleInit {
   }
 
   async makeRequest(url: string) {
-    console.log(url);
+    this.logger.log(url);
     const response = await fetch(url);
     return await response.text();
   }
