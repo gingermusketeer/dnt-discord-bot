@@ -25,14 +25,15 @@ export class ActivityService implements OnModuleInit {
     }
   }
 
-  on10am() {
+  on10am = () => {
     this.logger.log('starting 10am activity scrapping');
     this.fetchAndUploadActivityData().catch((error) => {
       this.logger.error('fetchAndUploadActivityData failed with error', error);
     });
-  }
+  };
 
   async fetchAndUploadActivityData() {
+    this.logger.log('Running fetchAndUploadActivityData');
     const numPages = await this.getActivityPages(
       'https://www.dnt.no/aktiviteter/',
     );
