@@ -87,15 +87,16 @@ export class DiscordService implements OnModuleInit {
       try {
         await msg.reply('Aye! :)');
       } catch (error) {
-        console.warn('Failed to respond to mention.');
-        console.warn(error);
+        console.error('Failed to respond to mention.', error);
       }
     }
   }
 
   async dmHandler(msg: Message<boolean>) {
-    if (this.configService.get('NODE_ENV') === 'production') {
+    try {
       msg.author.send(`Good to hear from you, ${msg.author.username}.`);
+    } catch (error) {
+      console.error('Failed to respond to dm.', error);
     }
   }
 }
