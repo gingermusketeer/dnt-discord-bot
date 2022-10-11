@@ -19,7 +19,7 @@ export class BotService implements OnModuleInit {
     private readonly activityDatabaseService: ActivityDatabaseService,
   ) {
     this.newActivityChannelId = this.configService.getOrThrow(
-      'DISCORD_BOT_TESTING_CHANNEL_ID',
+      'DISCORD_NEW_ACTIVITY_CHANNEL_ID',
     );
   }
   private task: cron.ScheduledTask;
