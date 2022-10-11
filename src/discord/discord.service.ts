@@ -1,6 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
+import {
+  Client,
+  EmbedBuilder,
+  GatewayIntentBits,
+  Message,
+  Partials,
+} from 'discord.js';
 
 @Injectable()
 export class DiscordService implements OnModuleInit {
@@ -8,7 +14,14 @@ export class DiscordService implements OnModuleInit {
 
   constructor(private readonly configService: ConfigService) {}
   async onModuleInit() {
-    this.client = new Client({ intents: [GatewayIntentBits.Guilds] });
+    this.client = new Client({
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
+      ],
+      partials: [Partials.Channel],
+    });
 
     this.client.on('ready', () => {
       console.log('discord ready');
@@ -21,6 +34,27 @@ export class DiscordService implements OnModuleInit {
         await interaction.reply('Pong!');
       }
     });
+
+    this.client.on('messageCreate', async (msg) => {
+      if (msg.author.bot) return;
+
+      const isFromTestChannel =
+        msg.channelId ===
+        this.configService.getOrThrow('DISCORD_BOT_TESTING_CHANNEL_ID');
+      const isProduction = this.configService.get('NODE_ENV') === 'production';
+
+      if (isFromTestChannel || isProduction) {
+        console.log('hello');
+      if (msg.channel.type === 0) {
+        this.textChannelHandler(msg);
+      }
+      }
+
+      if (msg.channel.type === 1) {
+        this.dmHandler(msg);
+      }
+    });
+
     await this.client.login(this.configService.getOrThrow('DISCORD_TOKEN'));
     await this.getChannels();
   }
@@ -43,5 +77,25 @@ export class DiscordService implements OnModuleInit {
         return { name: channel?.name, id };
       }),
     );
+  }
+
+  async textChannelHandler(msg: Message<boolean>) {
+    const botId = await this.configService.getOrThrow('DISCORD_BOT_USER_ID');
+    const botWasMentioned = msg.mentions.has(botId);
+
+    if (botWasMentioned) {
+      try {
+        await msg.reply('Aye! :)');
+      } catch (error) {
+        console.warn('Failed to respond to mention.');
+        console.warn(error);
+      }
+    }
+  }
+
+  async dmHandler(msg: Message<boolean>) {
+    if (this.configService.get('NODE_ENV') === 'production') {
+      msg.author.send(`Good to hear from you, ${msg.author.username}.`);
+    }
   }
 }
