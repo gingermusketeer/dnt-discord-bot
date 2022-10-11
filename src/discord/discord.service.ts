@@ -43,11 +43,8 @@ export class DiscordService implements OnModuleInit {
         this.configService.getOrThrow('DISCORD_BOT_TESTING_CHANNEL_ID');
       const isProduction = this.configService.get('NODE_ENV') === 'production';
 
-      if (isFromTestChannel || isProduction) {
-        console.log('hello');
-      if (msg.channel.type === 0) {
+      if (msg.channel.type === 0 && (isFromTestChannel || isProduction)) {
         this.textChannelHandler(msg);
-      }
       }
 
       if (msg.channel.type === 1) {
@@ -80,7 +77,7 @@ export class DiscordService implements OnModuleInit {
   }
 
   async textChannelHandler(msg: Message<boolean>) {
-    const botId = await this.configService.getOrThrow('DISCORD_BOT_USER_ID');
+    const botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
     const botWasMentioned = msg.mentions.has(botId);
 
     if (botWasMentioned) {
