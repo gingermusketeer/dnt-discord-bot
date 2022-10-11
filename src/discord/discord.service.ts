@@ -35,7 +35,7 @@ export class DiscordService implements OnModuleInit {
       }
     });
 
-    this.client.on('messageCreate', async (msg) => {
+    this.client.on('messageCreate', (msg) => {
       if (msg.author.bot) return;
 
       const isFromTestChannel =
@@ -76,24 +76,22 @@ export class DiscordService implements OnModuleInit {
     );
   }
 
-  async textChannelHandler(msg: Message<boolean>) {
+  textChannelHandler(msg: Message<boolean>) {
     const botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
     const botWasMentioned = msg.mentions.has(botId);
 
     if (botWasMentioned) {
-      try {
-        await msg.reply('Aye! :)');
-      } catch (error) {
+      msg.reply('Aye! :)').catch((error) => {
         console.error('Failed to respond to mention.', error);
-      }
+      });
     }
   }
 
-  async dmHandler(msg: Message<boolean>) {
-    try {
-      msg.author.send(`Good to hear from you, ${msg.author.username}.`);
-    } catch (error) {
+  dmHandler(msg: Message<boolean>) {
+    msg.author
+      .send(`Good to hear from you, ${msg.author.username}.`)
+      .catch((error) => {
       console.error('Failed to respond to dm.', error);
-    }
+      });
   }
 }
