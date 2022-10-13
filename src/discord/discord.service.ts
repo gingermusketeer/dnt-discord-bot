@@ -2,10 +2,12 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   Client,
+  DMChannel,
   EmbedBuilder,
   GatewayIntentBits,
   Message,
   Partials,
+  TextChannel,
 } from 'discord.js';
 
 @Injectable()
@@ -35,7 +37,19 @@ export class DiscordService implements OnModuleInit {
       }
     });
 
-    this.client.on('messageCreate', (msg) => {
+    this.client.on('messageCreate', this.onMessageCreate);
+
+    await this.client.login(this.configService.getOrThrow('DISCORD_TOKEN'));
+    await this.getChannels();
+  }
+
+  onMessageCreate = (msg: Message) => {
+    this.processMessage(msg).catch((error) => {
+      console.error('failed to process message error', error);
+    });
+  };
+
+  async processMessage(msg: Message) {
       if (msg.author.bot) return;
 
       const isFromTestChannel =
@@ -43,17 +57,16 @@ export class DiscordService implements OnModuleInit {
         this.configService.getOrThrow('DISCORD_BOT_TESTING_CHANNEL_ID');
       const isProduction = this.configService.get('NODE_ENV') === 'production';
 
-      if (msg.channel.type === 0 && (isFromTestChannel || isProduction)) {
-        this.textChannelHandler(msg);
+    if (
+      msg.channel instanceof TextChannel &&
+      (isFromTestChannel || isProduction)
+    ) {
+      await this.handleTextChannelMessage(msg);
       }
 
-      if (msg.channel.type === 1) {
-        this.dmHandler(msg);
+    if (msg.channel instanceof DMChannel) {
+      await this.handleDm(msg);
       }
-    });
-
-    await this.client.login(this.configService.getOrThrow('DISCORD_TOKEN'));
-    await this.getChannels();
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {
@@ -76,22 +89,16 @@ export class DiscordService implements OnModuleInit {
     );
   }
 
-  textChannelHandler(msg: Message<boolean>) {
+  async handleTextChannelMessage(msg: Message<boolean>) {
     const botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
     const botWasMentioned = msg.mentions.has(botId);
 
     if (botWasMentioned) {
-      msg.reply('Aye! :)').catch((error) => {
-        console.error('Failed to respond to mention.', error);
-      });
+      await msg.reply('Aye! :)');
     }
   }
 
-  dmHandler(msg: Message<boolean>) {
-    msg.author
-      .send(`Good to hear from you, ${msg.author.username}.`)
-      .catch((error) => {
-      console.error('Failed to respond to dm.', error);
-      });
+  async handleDm(msg: Message<boolean>) {
+    await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
   }
 }
