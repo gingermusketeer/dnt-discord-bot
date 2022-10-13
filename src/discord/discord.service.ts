@@ -45,28 +45,28 @@ export class DiscordService implements OnModuleInit {
 
   onMessageCreate = (msg: Message) => {
     this.processMessage(msg).catch((error) => {
-      console.error('failed to process message error', error);
+      console.error('failed to process message', error);
     });
   };
 
   async processMessage(msg: Message) {
-      if (msg.author.bot) return;
+    if (msg.author.bot) return;
 
-      const isFromTestChannel =
-        msg.channelId ===
-        this.configService.getOrThrow('DISCORD_BOT_TESTING_CHANNEL_ID');
-      const isProduction = this.configService.get('NODE_ENV') === 'production';
+    const isFromTestChannel =
+      msg.channelId ===
+      this.configService.getOrThrow('DISCORD_BOT_TESTING_CHANNEL_ID');
+    const isProduction = this.configService.get('NODE_ENV') === 'production';
 
     if (
       msg.channel instanceof TextChannel &&
       (isFromTestChannel || isProduction)
     ) {
       await this.handleTextChannelMessage(msg);
-      }
+    }
 
     if (msg.channel instanceof DMChannel) {
       await this.handleDm(msg);
-      }
+    }
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {
