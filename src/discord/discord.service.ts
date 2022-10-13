@@ -5,6 +5,7 @@ import {
   DMChannel,
   EmbedBuilder,
   GatewayIntentBits,
+  Interaction,
   Message,
   Partials,
   TextChannel,
@@ -15,6 +16,7 @@ export class DiscordService implements OnModuleInit {
   private client: Client;
 
   constructor(private readonly configService: ConfigService) {}
+
   async onModuleInit() {
     this.client = new Client({
       intents: [
@@ -29,13 +31,7 @@ export class DiscordService implements OnModuleInit {
       console.log('discord ready');
     });
 
-    this.client.on('interactionCreate', async (interaction) => {
-      if (!interaction.isChatInputCommand()) return;
-
-      if (interaction.commandName === 'ping') {
-        await interaction.reply('Pong!');
-      }
-    });
+    this.client.on('interactionCreate', this.onInteractionCreate);
 
     this.client.on('messageCreate', this.onMessageCreate);
 
@@ -69,6 +65,28 @@ export class DiscordService implements OnModuleInit {
     }
   }
 
+  onInteractionCreate = async (interaction: Interaction) => {
+    this.processInteraction(interaction).catch((error) => {
+      console.error('failed to process interaction', error);
+    });
+  };
+
+  async processInteraction(interaction: Interaction) {
+    //TODO Can we extract this to a new file? Maybe echo.service.ts or echo.module.ts etc?
+    if (!interaction.isChatInputCommand()) return;
+
+    const { commandName } = interaction;
+
+    if (commandName === 'ping') {
+      await interaction.reply('Pong!');
+    }
+
+    if (commandName === 'echo') {
+      const message = interaction.options.getString('message', true);
+      await interaction.reply(message);
+    }
+  }
+
   async sendMessage(channelId: string, embed: EmbedBuilder) {
     const channel = await this.client.channels.fetch(channelId);
     if (!channel || !channel.isTextBased()) {
@@ -80,7 +98,9 @@ export class DiscordService implements OnModuleInit {
   }
 
   async getChannels() {
-    const guild = await this.client.guilds.fetch('990712194842902629');
+    const guild = await this.client.guilds.fetch(
+      this.configService.getOrThrow('DISCORD_SERVER_ID'),
+    );
     const channels = await guild.channels.fetch();
     console.log(
       Array.from(channels.entries()).map(([id, channel]) => {
