@@ -85,6 +85,12 @@ export class DiscordService implements OnModuleInit {
       const message = interaction.options.getString('message', true);
       await interaction.reply(message);
     }
+
+    if (commandName === 'randomcabin') {
+      const checkIn = interaction.options.getString('check-in', true);
+      const checkOut = interaction.options.getString('check-out', true);
+      await interaction.reply('Not quite there yet, but working on it!');
+    }
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {

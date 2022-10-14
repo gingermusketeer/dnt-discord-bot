@@ -1,5 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 
-export const data = new SlashCommandBuilder()
-  .setName('ping')
-  .setDescription('Replies with pong!');
+export default class PingCommand {
+  public static slashCommandBuilder = new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Replies with pong!');
+}
