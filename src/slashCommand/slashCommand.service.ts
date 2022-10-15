@@ -1,5 +1,4 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { RESTPostAPIApplicationCommandsJSONBody } from 'discord.js';
 import * as fs from 'fs';
 import { DiscordService } from 'src/discord/discord.service';
