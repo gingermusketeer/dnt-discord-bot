@@ -1,0 +1,1905 @@
+//Request
+fetch("https://ws.visbook.com/8/api/6093/webproducts/2022-10-15/2022-10-16", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "no,nb-NO",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"macOS\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://reservations.visbook.com/",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+});
+
+
+//Response
+{
+    "accommodations": [
+        {
+            "id": 128851,
+            "type": "accommodation",
+            "sortIndex": 1,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hovedhytte, soverom 1, seng 1 underkøye",
+            "defaultUnitName": "Torsbu hovedhytte, soverom 1, seng 1 underkøye",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Lower bunk"
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 1289,
+                    "name": "​Voksen Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1287,
+                    "name": "​Voksen Medlem ",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 290,
+                    "pricePerStep": 290,
+                    "calculatedPrice": 290,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1282,
+                    "name": "​​​Ungdom (13-26 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1284,
+                    "name": "​​​​Barn (4-12 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 210,
+                    "pricePerStep": 210,
+                    "calculatedPrice": 210,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1283,
+                    "name": "​​​​​​Barn (4-12) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1293,
+                    "name": "​​​Ungdom (13-26 år) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 145,
+                    "pricePerStep": 145,
+                    "calculatedPrice": 145,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1285,
+                    "name": "​​​​​​​Barn (0-3år)",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [
+                {
+                    "imageType": "details",
+                    "imagePath": "publish/15405574/Torsbu-Hoved.jpg",
+                    "transformer": "https://res.cloudinary.com/visbook/image/upload/visdoc"
+                }
+            ],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Lower bunk",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": null,
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        },
+        {
+            "id": 128852,
+            "type": "accommodation",
+            "sortIndex": 2,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hovedhytte, soverom 1, seng 2 overkøye",
+            "defaultUnitName": "Torsbu hovedhytte, soverom 1, seng 2 overkøye",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Upper bunk"
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 1289,
+                    "name": "​Voksen Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1287,
+                    "name": "​Voksen Medlem ",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 290,
+                    "pricePerStep": 290,
+                    "calculatedPrice": 290,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1282,
+                    "name": "​​​Ungdom (13-26 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1284,
+                    "name": "​​​​Barn (4-12 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 210,
+                    "pricePerStep": 210,
+                    "calculatedPrice": 210,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1283,
+                    "name": "​​​​​​Barn (4-12) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1293,
+                    "name": "​​​Ungdom (13-26 år) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 145,
+                    "pricePerStep": 145,
+                    "calculatedPrice": 145,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1285,
+                    "name": "​​​​​​​Barn (0-3år)",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [
+                {
+                    "imageType": "details",
+                    "imagePath": "publish/15405574/Torsbu-Hoved.jpg",
+                    "transformer": "https://res.cloudinary.com/visbook/image/upload/visdoc"
+                }
+            ],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Upper bunk",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": null,
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        },
+        {
+            "id": 128853,
+            "type": "accommodation",
+            "sortIndex": 3,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hovedhytte, soverom 1, seng 3 underkøye",
+            "defaultUnitName": "Torsbu hovedhytte, soverom 1, seng 3 underkøye",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Lower bunk"
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 1289,
+                    "name": "​Voksen Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1287,
+                    "name": "​Voksen Medlem ",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 290,
+                    "pricePerStep": 290,
+                    "calculatedPrice": 290,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1282,
+                    "name": "​​​Ungdom (13-26 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1284,
+                    "name": "​​​​Barn (4-12 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 210,
+                    "pricePerStep": 210,
+                    "calculatedPrice": 210,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1283,
+                    "name": "​​​​​​Barn (4-12) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1293,
+                    "name": "​​​Ungdom (13-26 år) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 145,
+                    "pricePerStep": 145,
+                    "calculatedPrice": 145,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1285,
+                    "name": "​​​​​​​Barn (0-3år)",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [
+                {
+                    "imageType": "details",
+                    "imagePath": "publish/15405574/Torsbu-Hoved.jpg",
+                    "transformer": "https://res.cloudinary.com/visbook/image/upload/visdoc"
+                }
+            ],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Lower bunk",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": null,
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        },
+        {
+            "id": 128854,
+            "type": "accommodation",
+            "sortIndex": 4,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hovedhytte, soverom 1, seng 4 overkøye",
+            "defaultUnitName": "Torsbu hovedhytte, soverom 1, seng 4 overkøye",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Upper bunk"
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 1289,
+                    "name": "​Voksen Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1287,
+                    "name": "​Voksen Medlem ",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 290,
+                    "pricePerStep": 290,
+                    "calculatedPrice": 290,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1282,
+                    "name": "​​​Ungdom (13-26 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1284,
+                    "name": "​​​​Barn (4-12 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 210,
+                    "pricePerStep": 210,
+                    "calculatedPrice": 210,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1283,
+                    "name": "​​​​​​Barn (4-12) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1293,
+                    "name": "​​​Ungdom (13-26 år) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 145,
+                    "pricePerStep": 145,
+                    "calculatedPrice": 145,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1285,
+                    "name": "​​​​​​​Barn (0-3år)",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [
+                {
+                    "imageType": "details",
+                    "imagePath": "publish/15405574/Torsbu-Hoved.jpg",
+                    "transformer": "https://res.cloudinary.com/visbook/image/upload/visdoc"
+                }
+            ],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Upper bunk",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": null,
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        },
+        {
+            "id": 128855,
+            "type": "accommodation",
+            "sortIndex": 5,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hovedhytte, soverom 2, seng 1 underkøye",
+            "defaultUnitName": "Torsbu hovedhytte, soverom 2, seng 1 underkøye",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Lower bunk"
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 1289,
+                    "name": "​Voksen Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1287,
+                    "name": "​Voksen Medlem ",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 290,
+                    "pricePerStep": 290,
+                    "calculatedPrice": 290,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1282,
+                    "name": "​​​Ungdom (13-26 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1284,
+                    "name": "​​​​Barn (4-12 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 210,
+                    "pricePerStep": 210,
+                    "calculatedPrice": 210,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1283,
+                    "name": "​​​​​​Barn (4-12) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1293,
+                    "name": "​​​Ungdom (13-26 år) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 145,
+                    "pricePerStep": 145,
+                    "calculatedPrice": 145,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1285,
+                    "name": "​​​​​​​Barn (0-3år)",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [
+                {
+                    "imageType": "details",
+                    "imagePath": "publish/15405574/Torsbu-Hoved.jpg",
+                    "transformer": "https://res.cloudinary.com/visbook/image/upload/visdoc"
+                }
+            ],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Lower bunk",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": null,
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        },
+        {
+            "id": 128856,
+            "type": "accommodation",
+            "sortIndex": 6,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hovedhytte, soverom 2, seng 2 overkøye",
+            "defaultUnitName": "Torsbu hovedhytte, soverom 2, seng 2 overkøye",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Upper bunk"
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 1289,
+                    "name": "​Voksen Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1287,
+                    "name": "​Voksen Medlem ",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 290,
+                    "pricePerStep": 290,
+                    "calculatedPrice": 290,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1282,
+                    "name": "​​​Ungdom (13-26 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 410,
+                    "pricePerStep": 410,
+                    "calculatedPrice": 410,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1284,
+                    "name": "​​​​Barn (4-12 år) Ikke medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 210,
+                    "pricePerStep": 210,
+                    "calculatedPrice": 210,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1283,
+                    "name": "​​​​​​Barn (4-12) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1293,
+                    "name": "​​​Ungdom (13-26 år) Medlem",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 145,
+                    "pricePerStep": 145,
+                    "calculatedPrice": 145,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                },
+                {
+                    "id": 1285,
+                    "name": "​​​​​​​Barn (0-3år)",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 0,
+                    "pricePerStep": 0,
+                    "calculatedPrice": 0,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [
+                {
+                    "imageType": "details",
+                    "imagePath": "publish/15405574/Torsbu-Hoved.jpg",
+                    "transformer": "https://res.cloudinary.com/visbook/image/upload/visdoc"
+                }
+            ],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Upper bunk",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": null,
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        },
+        {
+            "id": 111341,
+            "type": "accommodation",
+            "sortIndex": 7,
+            "encryptedCompanyId": "FAAWAAoADgARAAAAAAAAAOFawYR%2Bdo1Hb3NEJc2gI2I%3D",
+            "name": "Torsbu",
+            "defaultName": "Torsbu",
+            "unitName": "Torsbu hundebur",
+            "defaultUnitName": "Torsbu hundebur",
+            "maxPeople": 1,
+            "minPeople": 1,
+            "defaultPeople": 1,
+            "description": {
+                "long": null,
+                "short": "Kun bur i gangen i sikringshytta.\r\n\r\nOm du har med hund må du bestille denne enheten. Om denne er opptatt, er det dessverre ikke plass til flere hunder.\r\nDet er ikke tillatt å ha hund i oppholdsrom, spiserom og soverom. Ta med underlag til hunden om nødvendig, ikke bruk hyttas sengetøy eller tepper."
+            },
+            "availability": {
+                "available": true,
+                "reason": null,
+                "reasonText": "",
+                "steps": [
+                    {
+                        "availableUnits": 1,
+                        "from": "2022-10-15T00:00:00+02:00",
+                        "to": "2022-10-16T00:00:00+02:00"
+                    }
+                ]
+            },
+            "prices": [
+                {
+                    "id": 2715,
+                    "name": "Hund",
+                    "priceType": "perDay",
+                    "pensionType": "unspecified",
+                    "discount1": 0,
+                    "discount2": 0,
+                    "originalPricePerStep": 100,
+                    "pricePerStep": 100,
+                    "calculatedPrice": 100,
+                    "availableNumberOfPeople": [
+                        {
+                            "from": 1,
+                            "to": 1,
+                            "exclude": []
+                        }
+                    ],
+                    "steps": [
+                        {
+                            "from": "2022-10-15T00:00:00+02:00",
+                            "to": "2022-10-16T00:00:00+02:00"
+                        }
+                    ],
+                    "priceAgeGroup": []
+                }
+            ],
+            "images": [],
+            "additionalServices": [],
+            "additionalMerchandises": [],
+            "productGroup": null,
+            "properties": {
+                "description_short": {
+                    "value": null,
+                    "text": "Kun bur i gangen i sikringshytta.\r\n\r\nOm du har med hund må du bestille denne enheten. Om denne er opptatt, er det dessverre ikke plass til flere hunder.\r\nDet er ikke tillatt å ha hund i oppholdsrom, spiserom og soverom. Ta med underlag til hunden om nødvendig, ikke bruk hyttas sengetøy eller tepper.",
+                    "name": "Kort beskrivelse",
+                    "description": "Kort beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "is_bed": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Sengeplass",
+                    "description": "Sengeplass",
+                    "type": "boolean",
+                    "group": null
+                },
+                "is_dogcage": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Hundebur",
+                    "description": "Hundebur",
+                    "type": "boolean",
+                    "group": null
+                },
+                "dropin_beds": {
+                    "value": null,
+                    "text": null,
+                    "name": "Drop-in senger",
+                    "description": "Drop-in senger",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_max": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Maks antall personer",
+                    "description": "Maks antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_min": {
+                    "value": "1",
+                    "text": null,
+                    "name": "Minimum antall personer",
+                    "description": "Minimum antall personer",
+                    "type": "integer",
+                    "group": null
+                },
+                "description_long": {
+                    "value": null,
+                    "text": null,
+                    "name": "Lang beskrivelse",
+                    "description": "Lang beskrivelse",
+                    "type": "text",
+                    "group": null
+                },
+                "unit_display_max": {
+                    "value": null,
+                    "text": null,
+                    "name": "Antallsvelger web, maksantall",
+                    "description": "Antallsvelger web, maksantall",
+                    "type": "integer",
+                    "group": null
+                },
+                "persons_default": {
+                    "value": null,
+                    "text": null,
+                    "name": "Standard antall personer",
+                    "description": "Standard antall personer",
+                    "type": "integer",
+                    "group": null
+                }
+            }
+        }
+    ],
+    "activities": [],
+    "restaurants": []
+}
