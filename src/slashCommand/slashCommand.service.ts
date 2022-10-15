@@ -6,7 +6,7 @@ import {
   Routes,
 } from 'discord.js';
 import * as fs from 'fs';
-import { BaseCommand } from './slashCommand.module';
+import { BaseCommand } from './slashCommand.interface';
 
 @Injectable()
 export class SlashCommandService implements OnModuleInit {
