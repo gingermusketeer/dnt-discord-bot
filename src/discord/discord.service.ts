@@ -15,6 +15,14 @@ import {
 export class DiscordService implements OnModuleInit {
   private client: Client;
 
+  private readonly botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
+  private readonly discordToken =
+    this.configService.getOrThrow('DISCORD_TOKEN');
+  private readonly guildId = this.configService.getOrThrow('DISCORD_SERVER_ID');
+  private readonly testingChannelId = this.configService.getOrThrow(
+    'DISCORD_BOT_TESTING_CHANNEL_ID',
+  );
+
   constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
@@ -35,7 +43,7 @@ export class DiscordService implements OnModuleInit {
 
     this.client.on('messageCreate', this.onMessageCreate);
 
-    await this.client.login(this.configService.getOrThrow('DISCORD_TOKEN'));
+    await this.client.login(this.discordToken);
     await this.getChannels();
   }
 
@@ -48,9 +56,7 @@ export class DiscordService implements OnModuleInit {
   async processMessage(msg: Message) {
     if (msg.author.bot) return;
 
-    const isFromTestChannel =
-      msg.channelId ===
-      this.configService.getOrThrow('DISCORD_BOT_TESTING_CHANNEL_ID');
+    const isFromTestChannel = msg.channelId === this.testingChannelId;
     const isProduction = this.configService.get('NODE_ENV') === 'production';
 
     if (
@@ -104,9 +110,7 @@ export class DiscordService implements OnModuleInit {
   }
 
   async getChannels() {
-    const guild = await this.client.guilds.fetch(
-      this.configService.getOrThrow('DISCORD_SERVER_ID'),
-    );
+    const guild = await this.client.guilds.fetch(this.guildId);
     const channels = await guild.channels.fetch();
     console.log(
       Array.from(channels.entries()).map(([id, channel]) => {
@@ -116,8 +120,7 @@ export class DiscordService implements OnModuleInit {
   }
 
   async handleTextChannelMessage(msg: Message<boolean>) {
-    const botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
-    const botWasMentioned = msg.mentions.has(botId);
+    const botWasMentioned = msg.mentions.has(this.botId);
 
     if (botWasMentioned) {
       await msg.reply('Aye! :)');
