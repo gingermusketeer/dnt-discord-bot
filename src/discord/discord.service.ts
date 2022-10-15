@@ -57,6 +57,18 @@ export class DiscordService implements OnModuleInit {
     });
   };
 
+  onInteractionCreate = (interaction: Interaction) => {
+    this.processInteraction(interaction).catch((error) => {
+      console.error('failed to process interaction', error);
+    });
+  };
+
+  onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
+    this.refreshSlashCommands(commands).catch((error) =>
+      console.error('Failed to refresh slash commands', error),
+    );
+  }
+
   async processMessage(msg: Message) {
     if (msg.author.bot) return;
 
@@ -74,12 +86,6 @@ export class DiscordService implements OnModuleInit {
       await this.handleDm(msg);
     }
   }
-
-  onInteractionCreate = (interaction: Interaction) => {
-    this.processInteraction(interaction).catch((error) => {
-      console.error('failed to process interaction', error);
-    });
-  };
 
   async processInteraction(interaction: Interaction) {
     //TODO Can we extract this to a new file? Maybe echo.service.ts or echo.module.ts etc?
@@ -103,26 +109,6 @@ export class DiscordService implements OnModuleInit {
     }
   }
 
-  async sendMessage(channelId: string, embed: EmbedBuilder) {
-    const channel = await this.client.channels.fetch(channelId);
-    if (!channel || !channel.isTextBased()) {
-      console.log('channel not found');
-      return false;
-    }
-
-    await channel.send({ embeds: [embed] });
-  }
-
-  async getChannels() {
-    const guild = await this.client.guilds.fetch(this.guildId);
-    const channels = await guild.channels.fetch();
-    console.log(
-      Array.from(channels.entries()).map(([id, channel]) => {
-        return { name: channel?.name, id };
-      }),
-    );
-  }
-
   async handleTextChannelMessage(msg: Message<boolean>) {
     const botWasMentioned = msg.mentions.has(this.botId);
 
@@ -133,12 +119,6 @@ export class DiscordService implements OnModuleInit {
 
   async handleDm(msg: Message<boolean>) {
     await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
-  }
-
-  onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
-    this.refreshSlashCommands(commands).catch((error) =>
-      console.error('Failed to refresh slash commands', error),
-    );
   }
 
   private async refreshSlashCommands(
@@ -159,6 +139,26 @@ export class DiscordService implements OnModuleInit {
 
     console.log(
       `Successfully reloaded ${data.length} application (/) commands.`,
+    );
+  }
+
+  async sendMessage(channelId: string, embed: EmbedBuilder) {
+    const channel = await this.client.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) {
+      console.log('channel not found');
+      return false;
+    }
+
+    await channel.send({ embeds: [embed] });
+  }
+
+  async getChannels() {
+    const guild = await this.client.guilds.fetch(this.guildId);
+    const channels = await guild.channels.fetch();
+    console.log(
+      Array.from(channels.entries()).map(([id, channel]) => {
+        return { name: channel?.name, id };
+      }),
     );
   }
 }
