@@ -4,6 +4,7 @@ export default class RandomCabinCommand {
   public static slashCommandBuilder = new SlashCommandBuilder()
     .setName('randomcabin')
     .setDescription('Finds a random cabin available at your dates')
+    .setDMPermission(true)
     .addStringOption((option) =>
       option
         .setName('check-in')
