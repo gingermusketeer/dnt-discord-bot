@@ -96,11 +96,10 @@ export class DiscordService implements OnModuleInit {
 
     // TODO dynamic import of module with corresponding name
     const path = `${__dirname}/commands/${commandName}.command.js`;
-    //const command: { default: BaseCommand } = await import(path);
-    const command = await import(path);
+    const command: { default: BaseCommand } = await import(path);
     console.log(command);
 
-    await command.handleCommand(interaction);
+    await command.default.handleCommand(interaction);
   }
 
   async handleTextChannelMessage(msg: Message<boolean>) {
