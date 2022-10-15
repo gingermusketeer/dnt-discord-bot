@@ -11,42 +11,41 @@ import { BaseCommand } from './slashCommand.module';
 @Injectable()
 export class SlashCommandService implements OnModuleInit {
   private rest: REST;
-  private commands: RESTPostAPIApplicationCommandsJSONBody[];
-  private botId: string;
+  private commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+  private readonly botId: string = this.configService.getOrThrow(
+    'DISCORD_BOT_USER_ID',
+  );
+  private readonly commandPath = `${__dirname}/commands`;
+  private readonly discordToken =
+    this.configService.getOrThrow('DISCORD_TOKEN');
 
   constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
-    this.botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
+    this.commands = await this.importCommands(this.commandPath);
 
-    this.rest = new REST({ version: '10' }).setToken(
-      this.configService.getOrThrow('DISCORD_TOKEN'),
+    this.refreshSlashCommands().catch((error) =>
+      console.error('Failed to refresh slash commands', error),
+    );
+  }
+
+  async refreshSlashCommands() {
+    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+
+    console.log(
+      `Started refreshing ${this.commands.length} application (/) commands.`,
     );
 
-    this.commands = [];
-    const commandPath = `${__dirname}/commands`;
-    this.commands = await this.importCommands(commandPath);
+    const data: any = await this.rest.put(
+      Routes.applicationCommands(this.botId),
+      {
+        body: this.commands,
+      },
+    );
 
-    console.log(this.commands);
-
-    try {
-      console.log(
-        `Started refreshing ${this.commands.length} application (/) commands.`,
-      );
-
-      const data: any = await this.rest.put(
-        Routes.applicationCommands(this.botId),
-        {
-          body: this.commands,
-        },
-      );
-
-      console.log(
-        `Successfully reloaded ${data.length} application (/) commands.`,
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    console.log(
+      `Successfully reloaded ${data.length} application (/) commands.`,
+    );
   }
 
   async importCommands(
@@ -61,7 +60,6 @@ export class SlashCommandService implements OnModuleInit {
     for (const file of commandFiles) {
       const path = `${commandPath}/${file}`;
       const command: { default: BaseCommand } = await import(path);
-      console.log(command);
       commands.push(command.default.slashCommandBuilder.toJSON());
     }
 
