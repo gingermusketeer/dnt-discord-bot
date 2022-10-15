@@ -1,51 +1,22 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  REST,
-  RESTPostAPIApplicationCommandsJSONBody,
-  Routes,
-} from 'discord.js';
+import { RESTPostAPIApplicationCommandsJSONBody } from 'discord.js';
 import * as fs from 'fs';
+import { DiscordService } from 'src/discord/discord.service';
 import { BaseCommand } from './slashCommand.interface';
 
 @Injectable()
 export class SlashCommandService implements OnModuleInit {
-  private rest: REST;
   private commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-  private readonly botId: string = this.configService.getOrThrow(
-    'DISCORD_BOT_USER_ID',
-  );
   private readonly commandPath = `${__dirname}/commands`;
-  private readonly discordToken =
-    this.configService.getOrThrow('DISCORD_TOKEN');
+  private discordService = new DiscordService(this.configService);
 
   constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
     this.commands = await this.importCommands(this.commandPath);
 
-    this.refreshSlashCommands().catch((error) =>
-      console.error('Failed to refresh slash commands', error),
-    );
-  }
-
-  async refreshSlashCommands() {
-    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
-
-    console.log(
-      `Started refreshing ${this.commands.length} application (/) commands.`,
-    );
-
-    const data: any = await this.rest.put(
-      Routes.applicationCommands(this.botId),
-      {
-        body: this.commands,
-      },
-    );
-
-    console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`,
-    );
+    this.discordService.onSlashCommandRefresh(this.commands);
   }
 
   async importCommands(

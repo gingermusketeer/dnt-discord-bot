@@ -9,5 +9,6 @@ export default class EchoCommand {
         .setName('message')
         .setDescription('The input to echo back')
         .setRequired(true),
-    );
+    )
+    .setDMPermission(false);
 }

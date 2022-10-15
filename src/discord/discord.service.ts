@@ -8,12 +8,16 @@ import {
   Interaction,
   Message,
   Partials,
+  REST,
+  RESTPostAPIApplicationCommandsJSONBody,
+  Routes,
   TextChannel,
 } from 'discord.js';
 
 @Injectable()
 export class DiscordService implements OnModuleInit {
   private client: Client;
+  private rest: REST;
 
   private readonly botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
   private readonly discordToken =
@@ -129,5 +133,32 @@ export class DiscordService implements OnModuleInit {
 
   async handleDm(msg: Message<boolean>) {
     await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
+  }
+
+  onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
+    this.refreshSlashCommands(commands).catch((error) =>
+      console.error('Failed to refresh slash commands', error),
+    );
+  }
+
+  private async refreshSlashCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[],
+  ) {
+    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+
+    console.log(
+      `Started refreshing ${commands.length} application (/) commands.`,
+    );
+
+    const data: any = await this.rest.put(
+      Routes.applicationCommands(this.botId),
+      {
+        body: commands,
+      },
+    );
+
+    console.log(
+      `Successfully reloaded ${data.length} application (/) commands.`,
+    );
   }
 }
