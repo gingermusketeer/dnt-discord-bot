@@ -13,6 +13,7 @@ import {
   Routes,
   TextChannel,
 } from 'discord.js';
+import { BaseCommand } from 'src/slashCommand/slashCommand.interface';
 
 @Injectable()
 export class DiscordService implements OnModuleInit {
@@ -93,20 +94,13 @@ export class DiscordService implements OnModuleInit {
 
     const { commandName } = interaction;
 
-    if (commandName === 'ping') {
-      await interaction.reply('Pong!');
-    }
+    // TODO dynamic import of module with corresponding name
+    const path = `${__dirname}/commands/${commandName}.command.js`;
+    //const command: { default: BaseCommand } = await import(path);
+    const command = await import(path);
+    console.log(command);
 
-    if (commandName === 'echo') {
-      const message = interaction.options.getString('message', true);
-      await interaction.reply(message);
-    }
-
-    if (commandName === 'randomcabin') {
-      const checkIn = interaction.options.getString('check-in', true);
-      const checkOut = interaction.options.getString('check-out', true);
-      await interaction.reply('Not quite there yet, but working on it!');
-    }
+    await command.handleCommand(interaction);
   }
 
   async handleTextChannelMessage(msg: Message<boolean>) {

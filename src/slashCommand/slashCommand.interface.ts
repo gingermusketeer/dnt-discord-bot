@@ -5,4 +5,6 @@ export interface BaseCommand {
     SlashCommandBuilder,
     'addSubcommand' | 'addSubcommandGroup'
   >;
+
+  handleCommand: any; // TODO no any!
 }

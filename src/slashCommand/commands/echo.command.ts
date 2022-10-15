@@ -1,4 +1,8 @@
-import { SlashCommandBuilder } from 'discord.js';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
 
 export default class EchoCommand {
   public static slashCommandBuilder = new SlashCommandBuilder()
@@ -11,4 +15,11 @@ export default class EchoCommand {
         .setRequired(true),
     )
     .setDMPermission(false);
+
+  public static async handleCommand(
+    interaction: ChatInputCommandInteraction<CacheType>,
+  ) {
+    const message = interaction.options.getString('message', true);
+    await interaction.reply(message);
+  }
 }
