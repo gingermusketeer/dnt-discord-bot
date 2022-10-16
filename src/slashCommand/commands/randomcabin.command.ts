@@ -17,4 +17,7 @@ export default class RandomCabinCommand {
         .setDescription('When do you want to leave (yyyy-mm-dd)?')
         .setRequired(true),
     );
+
+  // Defer response
+  // https://discordjs.guide/interactions/slash-commands.html#editing-responses
 }

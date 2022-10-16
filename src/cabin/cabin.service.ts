@@ -4,6 +4,47 @@ import { CabinDetails, CabinApi } from './cabin.api';
 @Injectable()
 export class CabinService {
   private readonly apiClient = new CabinApi();
+
+  async onModuleInit() {
+    //this.getRandomAvailableCabin('2022-12-12', '2022-12-13');
+    console.log('hello');
+
+    const random = this.getRandomCabin();
+
+    console.log((await random).bookingUrl);
+
+    const checkIn = '2022-12-12';
+    const checkOut = '2022-12-13';
+
+    fetch(
+      `https://ws.visbook.com/8/api/6093/webproducts/${checkIn}/${checkOut}`,
+      {
+        headers: {
+          accept: 'application/json, text/plain, */*',
+          'accept-language': 'no,nb-NO',
+          'cache-control': 'no-cache',
+          pragma: 'no-cache',
+          'sec-ch-ua':
+            '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"macOS"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'same-site',
+          'x-requested-with': 'XMLHttpRequest',
+        },
+        referrer: 'https://reservations.visbook.com/',
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        body: null,
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+      },
+    ).then((resp) => console.log(resp.json()));
+
+    //console.log(resp);
+  }
+
   async getRandomCabin(): Promise<CabinDetails> {
     const cabins = await this.apiClient.getCabins();
     const cabin = cabins[Math.floor(Math.random() * cabins.length)];
@@ -14,8 +55,8 @@ export class CabinService {
 
   async isCabinAvailable(
     id: number,
-    checkIn: Date,
-    checkOut: Date,
+    checkIn: string,
+    checkOut: string,
   ): Promise<boolean> {
     const cabinDetails = await this.apiClient.getCabinDetails(id);
     /*
@@ -26,7 +67,35 @@ export class CabinService {
     const checkInDate = checkIn;
     const checkOutDate = checkOut;
 
-    const bookingUrl = `${cabinDetails.bookingUrl}?checkIn=${checkInDate}&checkOut=${checkOutDate}`;
+    const bookingUrl = cabinDetails.bookingUrl;
+
+    console.log(bookingUrl);
+
+    const resp = await fetch(
+      `https://ws.visbook.com/8/api/6093/webproducts/${checkIn}/${checkOut}`,
+      {
+        headers: {
+          accept: 'application/json, text/plain, */*',
+          'accept-language': 'no,nb-NO',
+          'cache-control': 'no-cache',
+          pragma: 'no-cache',
+          'sec-ch-ua':
+            '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"macOS"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'same-site',
+          'x-requested-with': 'XMLHttpRequest',
+        },
+        referrer: 'https://reservations.visbook.com/',
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        body: null,
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+      },
+    );
     /*
     TODO
     - Some cabins point to booking.visbook.com, others to reservations.visbook.com
@@ -41,8 +110,8 @@ export class CabinService {
   }
 
   async getRandomAvailableCabin(
-    checkIn: Date,
-    checkOut: Date,
+    checkIn: string,
+    checkOut: string,
   ): Promise<CabinDetails | undefined> {
     const hasExceededTimeLimit = (now: number, timeLimit: number): boolean => {
       const elapsedTime = now - startTime;
@@ -74,8 +143,8 @@ export class CabinService {
   }
 
   async getAvailableCabins(
-    checkIn: Date,
-    checkOut: Date,
+    checkIn: string,
+    checkOut: string,
   ): Promise<CabinDetails[]> {
     const cabins = await this.apiClient.getCabins();
 
