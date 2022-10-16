@@ -65,9 +65,13 @@ export class DiscordService implements OnModuleInit {
   };
 
   onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
-    this.refreshSlashCommands(commands).catch((error) =>
-      console.error('Failed to refresh slash commands', error),
-    );
+    // TODO is it necessary to delete first or is update enough?
+    this.deleteSlashCommands()
+      .catch((error) => console.error('Failed to delete slash commands', error))
+      .then(() => this.refreshSlashCommands(commands))
+      .catch((error) =>
+        console.error('Failed to refresh slash commands', error),
+      );
   }
 
   async processMessage(msg: Message) {
@@ -116,9 +120,7 @@ export class DiscordService implements OnModuleInit {
   ) {
     this.rest = new REST({ version: '10' }).setToken(this.discordToken);
 
-    console.log(
-      `Started refreshing ${commands.length} application (/) commands.`,
-    );
+    console.log(`Registering ${commands.length} application (/) commands...`);
 
     const data: any = await this.rest.put(
       Routes.applicationCommands(this.botId),
@@ -130,6 +132,16 @@ export class DiscordService implements OnModuleInit {
     console.log(
       `Successfully reloaded ${data.length} application (/) commands.`,
     );
+  }
+
+  private async deleteSlashCommands() {
+    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+
+    console.log('Deleting application (/) commands...');
+
+    await this.rest.put(Routes.applicationCommands(this.botId), { body: [] });
+
+    console.log('...done!');
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {
