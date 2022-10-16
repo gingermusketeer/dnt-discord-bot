@@ -11,7 +11,7 @@ export default class PspspsCommand {
 
   public static async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
-  ) {
+  ): Promise<void> {
     await interaction.reply('Meow :)');
   }
 }

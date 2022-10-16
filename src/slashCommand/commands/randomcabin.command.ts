@@ -24,7 +24,7 @@ export default class RandomCabinCommand {
 
   public static async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
-  ) {
+  ): Promise<void> {
     const checkIn = interaction.options.getString('check-in', true);
     const checkOut = interaction.options.getString('check-out', true);
     await interaction.reply('Not quite there yet, but working on it!');

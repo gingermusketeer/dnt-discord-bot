@@ -18,7 +18,7 @@ export default class EchoCommand {
 
   public static async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
-  ) {
+  ): Promise<void> {
     const message = interaction.options.getString('message', true);
     await interaction.reply(message);
   }

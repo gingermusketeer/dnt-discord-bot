@@ -89,15 +89,12 @@ export class DiscordService implements OnModuleInit {
   }
 
   async processInteraction(interaction: Interaction) {
-    //TODO Can we extract this to a new file? Maybe echo.service.ts or echo.module.ts etc?
     if (!interaction.isChatInputCommand()) return;
 
     const { commandName } = interaction;
 
-    // TODO dynamic import of module with corresponding name
-    const path = `${__dirname}/commands/${commandName}.command.js`;
+    const path = `${__dirname}/../slashCommand/commands/${commandName}.command.js`;
     const command: { default: BaseCommand } = await import(path);
-    console.log(command);
 
     await command.default.handleCommand(interaction);
   }
