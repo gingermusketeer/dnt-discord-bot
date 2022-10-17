@@ -1,21 +1,23 @@
 import { CabinDetails } from 'src/cabin/cabin.api';
+import { AccommodationAvailability } from './visbook.interface';
 
 export class VisbookApi {
   async isCabinAvailable(
-    cabinDetails: CabinDetails,
+    cabin: CabinDetails,
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
-    /*
-    TODO
-    - Validate/format date to match yyyy-mm-dd
-    */
-    const checkInDate = checkIn;
-    const checkOutDate = checkOut;
+    const bookingUrl = cabin.bookingUrl;
 
-    const bookingUrl = cabinDetails.bookingUrl;
+    console.log('Cabin:', cabin.id, bookingUrl, checkIn, checkOut);
 
-    console.log(bookingUrl);
+    if (bookingUrl === undefined) {
+      return false;
+    }
+
+    // https://reservations.visbook.com/5461?lang=no
+    // Check if booking.visbook or reservations.visbook
+    // Extract ID
 
     /*
     TODO
@@ -25,39 +27,54 @@ export class VisbookApi {
     - visbook API: https://ws.visbook.com/8/docs/index.html#tag/AvailabilityCalendar
     */
 
-    // Call visbook api
-    // If available rooms/beds, return true
+    // TODO get ID from bookingUrl
+    // verify it also works for bookings.visbook.com ?
+    const cabinVisbookId = 5972;
+
+    const visbookResponse = await this.makeRequest(
+      cabinVisbookId,
+      checkIn,
+      checkOut,
+    );
+
+    const accommodations = visbookResponse.accommodations;
+
+    for (const accommodation of accommodations) {
+      if (accommodation.availability.available === true) return true;
+    }
+
     return false;
   }
 
-  private async makeRequest(query: any) {
-    const response = await fetch(
-      `https://ws.visbook.com/8/api/6093/webproducts/${checkIn}/${checkOut}`,
-      {
-        headers: {
-          accept: 'application/json, text/plain, */*',
-          'accept-language': 'no,nb-NO',
-          //'cache-control': 'no-cache',
-          /*pragma: 'no-cache',
-          'sec-ch-ua':
-            '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-site',
-          'x-requested-with': 'XMLHttpRequest',*/
-        },
-        referrer: 'https://reservations.visbook.com/',
-        referrerPolicy: 'strict-origin-when-cross-origin',
-        body: null,
-        method: 'GET',
-        mode: 'cors',
-        //credentials: 'include',
-      },
-    );
+  private async makeRequest(
+    cabinId: number,
+    checkIn: string,
+    checkOut: string,
+  ): Promise<AccommodationAvailability> {
+    const requestUrl = `https://ws.visbook.com/8/api/${cabinId}/webproducts/${checkIn}/${checkOut}`;
 
-    //console.log(resp);
+    const response = await fetch(requestUrl, {
+      headers: {
+        accept: 'application/json, text/plain, */*',
+        'accept-language': 'no,nb-NO',
+        'cache-control': 'no-cache',
+        pragma: 'no-cache',
+        'sec-ch-ua':
+          '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'x-requested-with': 'XMLHttpRequest',
+      },
+      referrer: 'https://reservations.visbook.com/',
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      body: null,
+      method: 'GET',
+      mode: 'cors',
+      credentials: 'include',
+    });
 
     return response.json();
   }

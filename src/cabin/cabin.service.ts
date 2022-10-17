@@ -8,6 +8,17 @@ export class CabinService {
   private readonly apiClient = new CabinApi();
   private readonly visbookApiClient = new VisbookApi();
 
+  async onModuleInit() {
+    const cabin = await this.getRandomCabin();
+    const isAvailable = await this.visbookApiClient.isCabinAvailable(
+      cabin,
+      '2022-11-01',
+      '2022-11-02',
+    );
+
+    console.log('Available:', isAvailable);
+  }
+
   async getRandomCabin(): Promise<CabinDetails> {
     const cabins = await this.apiClient.getCabins();
     const cabin = cabins[Math.floor(Math.random() * cabins.length)];

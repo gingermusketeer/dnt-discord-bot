@@ -1,6 +1,6 @@
 // TODO replace "unknown" for relevant properties
 
-export interface VisbookResponse {
+export interface AccommodationAvailability {
   accommodations: Accommodation[];
   activities: Record<string, unknown>[];
   restaurants: Record<string, unknown>[];
