@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CabinDetails, CabinApi } from './cabin.api';
+import { dateIsValid } from './cabin.utils';
 
 @Injectable()
 export class CabinService {
@@ -58,14 +59,12 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
+    // TODO Validate earlier to provide more useful user feedback
+    if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
+      return false;
+    }
+
     const cabinDetails = await this.apiClient.getCabinDetails(id);
-    /*
-    TODO
-    - How does user give input - via a message in discord?
-    - Validate/format date to match yyyy-mm-dd
-    */
-    const checkInDate = checkIn;
-    const checkOutDate = checkOut;
 
     const bookingUrl = cabinDetails.bookingUrl;
 
@@ -113,6 +112,11 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<CabinDetails | undefined> {
+    // TODO Validate earlier to provide more useful user feedback
+    if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
+      return undefined;
+    }
+
     const hasExceededTimeLimit = (now: number, timeLimit: number): boolean => {
       const elapsedTime = now - startTime;
       if (elapsedTime >= timeLimit) {
@@ -121,7 +125,6 @@ export class CabinService {
       return false;
     };
 
-    // TODO validate/format checkIn, checkOut to match yyyy-mm-dd
     const startTime = Date.now();
     let cabin = await this.getRandomCabin();
 
@@ -145,10 +148,13 @@ export class CabinService {
   async getAvailableCabins(
     checkIn: string,
     checkOut: string,
-  ): Promise<CabinDetails[]> {
-    const cabins = await this.apiClient.getCabins();
+  ): Promise<CabinDetails[] | undefined> {
+    // TODO Validate earlier to provide more useful user feedback
+    if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
+      return undefined;
+    }
 
-    // TODO validate/format checkIn, checkOut to match yyyy-mm-dd
+    const cabins = await this.apiClient.getCabins();
 
     const areCabinsAvailable = await Promise.all(
       cabins.map((cabin) =>
