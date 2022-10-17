@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { VisbookApi } from 'src/visbook/visbook.api';
 import { CabinDetails, CabinApi } from './cabin.api';
-import { dateIsValid } from './cabin.utils';
+import { dateIsValid, getVisbookId } from './cabin.utils';
 
 @Injectable()
 export class CabinService {
@@ -10,13 +10,13 @@ export class CabinService {
 
   async onModuleInit() {
     const cabin = await this.getRandomCabin();
-    const isAvailable = await this.visbookApiClient.isCabinAvailable(
+    const isAvailable = await this.isCabinAvailable(
       cabin,
       '2022-11-01',
       '2022-11-02',
     );
 
-    console.log('Available:', isAvailable);
+    console.log('Cabin:', cabin.bookingUrl, 'Available:', isAvailable);
   }
 
   async getRandomCabin(): Promise<CabinDetails> {
@@ -28,7 +28,7 @@ export class CabinService {
   }
 
   async isCabinAvailable(
-    id: number,
+    cabin: CabinDetails,
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
@@ -37,10 +37,21 @@ export class CabinService {
       return false;
     }
 
-    const cabinDetails = await this.apiClient.getCabinDetails(id);
+    if (cabin.bookingUrl === null) {
+      return false;
+    }
+
+    if (!cabin.bookingUrl.includes('reservations')) {
+      console.log('not a reservations url');
+      return false;
+    }
+
+    const cabinVisbookId = getVisbookId(cabin.bookingUrl);
+
+    if (cabinVisbookId === 0) return false;
 
     const cabinIsAvailable = this.visbookApiClient.isCabinAvailable(
-      cabinDetails,
+      cabinVisbookId,
       checkIn,
       checkOut,
     );
@@ -68,9 +79,7 @@ export class CabinService {
     const startTime = Date.now();
     let cabin = await this.getRandomCabin();
 
-    while (
-      (await this.isCabinAvailable(cabin.id, checkIn, checkOut)) === false
-    ) {
+    while ((await this.isCabinAvailable(cabin, checkIn, checkOut)) === false) {
       cabin = await this.getRandomCabin();
       if (hasExceededTimeLimit(Date.now(), 60000)) {
         /* TODO
@@ -96,7 +105,8 @@ export class CabinService {
 
     const cabins = await this.apiClient.getCabins();
 
-    const areCabinsAvailable = await Promise.all(
+    // TODO we need cabin details here or change where cabin details are fetched
+    /*const areCabinsAvailable = await Promise.all(
       cabins.map((cabin) =>
         this.isCabinAvailable(cabin.node.id, checkIn, checkOut),
       ),
@@ -112,6 +122,6 @@ export class CabinService {
       ),
     );
 
-    return cabinDetails;
+    return cabinDetails;*/
   }
 }

@@ -14,3 +14,17 @@ export function dateIsValid(dateString: string): boolean {
 
   return date.toISOString().startsWith(dateString);
 }
+
+export function getVisbookId(url: string): number {
+  const urlParts = url.split('/');
+  for (const part of urlParts) {
+    const int = parseInt(part, 10);
+    if (isNaN(int)) {
+      continue;
+    } else {
+      return int;
+    }
+  }
+
+  return 0;
+}

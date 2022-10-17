@@ -1,19 +1,18 @@
-import { CabinDetails } from 'src/cabin/cabin.api';
 import { AccommodationAvailability } from './visbook.interface';
 
 export class VisbookApi {
   async isCabinAvailable(
-    cabin: CabinDetails,
+    cabinId: number,
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
-    const bookingUrl = cabin.bookingUrl;
+    //const bookingUrl = cabin.bookingUrl;
 
-    console.log('Cabin:', cabin.id, bookingUrl, checkIn, checkOut);
+    //console.log('Cabin:', cabin.id, bookingUrl, checkIn, checkOut);
 
-    if (bookingUrl === undefined) {
-      return false;
-    }
+    //if (bookingUrl === undefined) {
+    //  return false;
+    //}
 
     // https://reservations.visbook.com/5461?lang=no
     // Check if booking.visbook or reservations.visbook
@@ -29,15 +28,15 @@ export class VisbookApi {
 
     // TODO get ID from bookingUrl
     // verify it also works for bookings.visbook.com ?
-    const cabinVisbookId = 5972;
+    //const cabinVisbookId = 5972;
 
-    const visbookResponse = await this.makeRequest(
-      cabinVisbookId,
-      checkIn,
-      checkOut,
-    );
+    const visbookResponse = await this.makeRequest(cabinId, checkIn, checkOut);
 
     const accommodations = visbookResponse.accommodations;
+
+    if (accommodations === undefined) {
+      return false;
+    }
 
     for (const accommodation of accommodations) {
       if (accommodation.availability.available === true) return true;
