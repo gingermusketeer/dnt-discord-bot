@@ -1,50 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { VisbookApi } from 'src/visbook/visbook.api';
 import { CabinDetails, CabinApi } from './cabin.api';
 import { dateIsValid } from './cabin.utils';
 
 @Injectable()
 export class CabinService {
   private readonly apiClient = new CabinApi();
-
-  async onModuleInit() {
-    //this.getRandomAvailableCabin('2022-12-12', '2022-12-13');
-    console.log('hello');
-
-    const random = this.getRandomCabin();
-
-    console.log((await random).bookingUrl);
-
-    const checkIn = '2022-12-12';
-    const checkOut = '2022-12-13';
-
-    fetch(
-      `https://ws.visbook.com/8/api/6093/webproducts/${checkIn}/${checkOut}`,
-      {
-        headers: {
-          accept: 'application/json, text/plain, */*',
-          'accept-language': 'no,nb-NO',
-          'cache-control': 'no-cache',
-          pragma: 'no-cache',
-          'sec-ch-ua':
-            '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-site',
-          'x-requested-with': 'XMLHttpRequest',
-        },
-        referrer: 'https://reservations.visbook.com/',
-        referrerPolicy: 'strict-origin-when-cross-origin',
-        body: null,
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
-      },
-    ).then((resp) => console.log(resp.json()));
-
-    //console.log(resp);
-  }
+  private readonly visbookApiClient = new VisbookApi();
 
   async getRandomCabin(): Promise<CabinDetails> {
     const cabins = await this.apiClient.getCabins();
@@ -66,46 +28,13 @@ export class CabinService {
 
     const cabinDetails = await this.apiClient.getCabinDetails(id);
 
-    const bookingUrl = cabinDetails.bookingUrl;
-
-    console.log(bookingUrl);
-
-    const resp = await fetch(
-      `https://ws.visbook.com/8/api/6093/webproducts/${checkIn}/${checkOut}`,
-      {
-        headers: {
-          accept: 'application/json, text/plain, */*',
-          'accept-language': 'no,nb-NO',
-          'cache-control': 'no-cache',
-          pragma: 'no-cache',
-          'sec-ch-ua':
-            '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-site',
-          'x-requested-with': 'XMLHttpRequest',
-        },
-        referrer: 'https://reservations.visbook.com/',
-        referrerPolicy: 'strict-origin-when-cross-origin',
-        body: null,
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
-      },
+    const cabinIsAvailable = this.visbookApiClient.isCabinAvailable(
+      cabinDetails,
+      checkIn,
+      checkOut,
     );
-    /*
-    TODO
-    - Some cabins point to booking.visbook.com, others to reservations.visbook.com
-    - Sample URL: https://reservations.visbook.com/6093/search?lang=no&checkIn=2022-10-12&checkOut=2022-10-13
-    - lang is optional
-    - visbook API: https://ws.visbook.com/8/docs/index.html#tag/AvailabilityCalendar
-    */
 
-    // Call visbook api
-    // If available rooms/beds, return true
-    return false;
+    return cabinIsAvailable;
   }
 
   async getRandomAvailableCabin(
