@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CabinDetails, CabinApi } from './cabin.api';
+import { CabinApi } from './cabin.api';
+import { CabinDetails } from './cabin.interface';
 
 @Injectable()
 export class CabinService {
