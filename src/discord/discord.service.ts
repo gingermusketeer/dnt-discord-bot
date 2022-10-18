@@ -65,7 +65,6 @@ export class DiscordService implements OnModuleInit {
   };
 
   onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
-    // TODO is it necessary to delete first or is update enough?
     this.deleteSlashCommands()
       .catch((error) => console.error('Failed to delete slash commands', error))
       .then(() => this.refreshSlashCommands(commands))
