@@ -8,17 +8,6 @@ export class CabinService {
   private readonly apiClient = new CabinApi();
   private readonly visbookApiClient = new VisbookApi();
 
-  async onModuleInit() {
-    const cabin = await this.getRandomCabin();
-    const isAvailable = await this.isCabinAvailable(
-      cabin,
-      '2022-11-01',
-      '2022-11-02',
-    );
-
-    console.log('Cabin:', cabin.bookingUrl, 'Available:', isAvailable);
-  }
-
   async getRandomCabin(): Promise<CabinDetails> {
     const cabins = await this.apiClient.getCabins();
     const cabin = cabins[Math.floor(Math.random() * cabins.length)];
@@ -32,12 +21,13 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
-    // TODO Validate earlier to provide more useful user feedback
     if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
+      console.log('invalid date(s)');
       return false;
     }
 
     if (cabin.bookingUrl === null) {
+      console.log('no booking url');
       return false;
     }
 
@@ -50,7 +40,7 @@ export class CabinService {
 
     if (cabinVisbookId === 0) return false;
 
-    const cabinIsAvailable = this.visbookApiClient.isCabinAvailable(
+    const cabinIsAvailable = await this.visbookApiClient.isCabinAvailable(
       cabinVisbookId,
       checkIn,
       checkOut,
@@ -63,7 +53,6 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<CabinDetails | undefined> {
-    // TODO Validate earlier to provide more useful user feedback
     if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
       return undefined;
     }
@@ -98,7 +87,6 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<CabinDetails[] | undefined> {
-    // TODO Validate earlier to provide more useful user feedback
     if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
       return undefined;
     }

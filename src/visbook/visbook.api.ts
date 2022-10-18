@@ -2,35 +2,15 @@ import { AccommodationAvailability } from './visbook.interface';
 
 export class VisbookApi {
   async isCabinAvailable(
-    cabinId: number,
+    cabinVisbookId: number,
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
-    //const bookingUrl = cabin.bookingUrl;
-
-    //console.log('Cabin:', cabin.id, bookingUrl, checkIn, checkOut);
-
-    //if (bookingUrl === undefined) {
-    //  return false;
-    //}
-
-    // https://reservations.visbook.com/5461?lang=no
-    // Check if booking.visbook or reservations.visbook
-    // Extract ID
-
-    /*
-    TODO
-    - Some cabins point to booking.visbook.com, others to reservations.visbook.com
-    - Sample URL: https://reservations.visbook.com/6093/search?lang=no&checkIn=2022-10-12&checkOut=2022-10-13
-    - lang is optional
-    - visbook API: https://ws.visbook.com/8/docs/index.html#tag/AvailabilityCalendar
-    */
-
-    // TODO get ID from bookingUrl
-    // verify it also works for bookings.visbook.com ?
-    //const cabinVisbookId = 5972;
-
-    const visbookResponse = await this.makeRequest(cabinId, checkIn, checkOut);
+    const visbookResponse = await this.makeRequest(
+      cabinVisbookId,
+      checkIn,
+      checkOut,
+    );
 
     const accommodations = visbookResponse.accommodations;
 
@@ -46,11 +26,11 @@ export class VisbookApi {
   }
 
   private async makeRequest(
-    cabinId: number,
+    cabinVisbookId: number,
     checkIn: string,
     checkOut: string,
   ): Promise<AccommodationAvailability> {
-    const requestUrl = `https://ws.visbook.com/8/api/${cabinId}/webproducts/${checkIn}/${checkOut}`;
+    const requestUrl = `https://ws.visbook.com/8/api/${cabinVisbookId}/webproducts/${checkIn}/${checkOut}`;
 
     const response = await fetch(requestUrl, {
       headers: {
