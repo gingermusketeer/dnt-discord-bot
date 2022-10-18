@@ -75,7 +75,7 @@ export class DiscordService implements OnModuleInit {
     }
   }
 
-  onInteractionCreate = async (interaction: Interaction) => {
+  onInteractionCreate = (interaction: Interaction) => {
     this.processInteraction(interaction).catch((error) => {
       console.error('failed to process interaction', error);
     });

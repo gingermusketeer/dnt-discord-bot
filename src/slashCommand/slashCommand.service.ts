@@ -9,9 +9,8 @@ import { BaseCommand } from './slashCommand.interface';
 export class SlashCommandService implements OnModuleInit {
   private commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   private readonly commandPath = `${__dirname}/commands`;
-  private discordService = new DiscordService(this.configService);
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly discordService: DiscordService) {}
 
   async onModuleInit() {
     this.commands = await this.importCommands(this.commandPath);
