@@ -26,6 +26,7 @@ export class DiscordService implements OnModuleInit {
   private readonly testingChannelId = this.configService.getOrThrow(
     'DISCORD_BOT_TESTING_CHANNEL_ID',
   );
+  private readonly environment = this.configService.get('NODE_ENV');
 
   constructor(
     private readonly configService: ConfigService,
@@ -65,9 +66,17 @@ export class DiscordService implements OnModuleInit {
   };
 
   onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
-    this.deleteSlashCommands()
-      .catch((error) => console.error('Failed to delete slash commands', error))
-      .then(() => this.refreshSlashCommands(commands))
+    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+
+    this.deleteGlobalCommands()
+      .catch((error) =>
+        console.error('Failed to delete global slash commands', error),
+      )
+      .then(() => this.deleteGuildCommands())
+      .catch((error) =>
+        console.error('Failed to delete guild slash commands', error),
+      )
+      .then(() => this.registerSlashCommands(commands))
       .catch((error) =>
         console.error('Failed to refresh slash commands', error),
       );
@@ -77,7 +86,7 @@ export class DiscordService implements OnModuleInit {
     if (msg.author.bot) return;
 
     const isFromTestChannel = msg.channelId === this.testingChannelId;
-    const isProduction = this.configService.get('NODE_ENV') === 'production';
+    const isProduction = this.environment === 'production';
 
     if (
       msg.channel instanceof TextChannel &&
@@ -103,36 +112,59 @@ export class DiscordService implements OnModuleInit {
     await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
   }
 
-  private async refreshSlashCommands(
+  private async registerSlashCommands(
     commands: RESTPostAPIApplicationCommandsJSONBody[],
   ) {
-    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+    if (this.environment === 'production') {
+      await this.registerGlobalCommands(commands);
+    }
 
-    console.log(`Registering ${commands.length} application (/) commands...`);
+    await this.registerGuildCommands(commands);
+  }
 
-    const data: any = await this.rest.put(
+  private async registerGlobalCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[],
+  ) {
+    if (commands.length === 0) {
+      console.log('Deleting global application (/) commands...');
+    } else {
+      console.log(
+        `Registering ${commands.length} global application (/) commands...`,
+      );
+    }
+    await this.rest.put(Routes.applicationCommands(this.botId), {
+      body: commands,
+    });
+    console.log(`...done!`);
+  }
+
+  private async registerGuildCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[],
+  ) {
+    if (commands.length === 0) {
+      console.log('Deleting guild application (/) commands...');
+    } else {
+      console.log(
+        `Registering ${commands.length} guild application (/) commands...`,
+      );
+    }
+
+    await this.rest.put(
       Routes.applicationGuildCommands(this.botId, this.guildId),
       {
         body: commands,
       },
     );
 
-    console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`,
-    );
+    console.log(`...done!`);
   }
 
-  private async deleteSlashCommands() {
-    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+  private async deleteGlobalCommands() {
+    await this.registerGlobalCommands([]);
+  }
 
-    console.log('Deleting application (/) commands...');
-
-    await this.rest.put(
-      Routes.applicationGuildCommands(this.botId, this.guildId),
-      { body: [] },
-    );
-
-    console.log('...done!');
+  private async deleteGuildCommands() {
+    await this.registerGuildCommands([]);
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {
