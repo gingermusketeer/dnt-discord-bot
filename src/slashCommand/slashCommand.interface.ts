@@ -7,5 +7,5 @@ export interface BaseCommand {
     'addSubcommand' | 'addSubcommandGroup'
   >;
 
-  handleCommand(arg: ChatInputCommandInteraction): Promise<any>;
+  handleCommand(arg: ChatInputCommandInteraction): Promise<void>;
 }
