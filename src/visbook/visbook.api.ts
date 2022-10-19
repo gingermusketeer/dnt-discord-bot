@@ -1,5 +1,9 @@
 import { AccommodationAvailability } from './visbook.interface';
 
+/*
+Visbook API docs: https://ws.visbook.com/8/docs/index.html
+*/
+
 export class VisbookApi {
   async getAccommodationAvailability(
     cabinVisbookId: number,
