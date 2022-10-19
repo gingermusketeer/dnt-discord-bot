@@ -1,36 +1,20 @@
 import { AccommodationAvailability } from './visbook.interface';
 
 export class VisbookApi {
-  async isCabinAvailable(
-    cabinVisbookId: number,
-    checkIn: string,
-    checkOut: string,
-  ): Promise<boolean> {
-    const visbookResponse = await this.makeRequest(
-      cabinVisbookId,
-      checkIn,
-      checkOut,
-    );
-
-    const accommodations = visbookResponse.accommodations;
-
-    if (accommodations === undefined) {
-      return false;
-    }
-
-    for (const accommodation of accommodations) {
-      if (accommodation.availability.available === true) return true;
-    }
-
-    return false;
-  }
-
-  private async makeRequest(
+  async getAccommodationAvailability(
     cabinVisbookId: number,
     checkIn: string,
     checkOut: string,
   ): Promise<AccommodationAvailability> {
-    const requestUrl = `https://ws.visbook.com/8/api/${cabinVisbookId}/webproducts/${checkIn}/${checkOut}`;
+    const request = `/${cabinVisbookId}/webproducts/${checkIn}/${checkOut}`;
+    return await this.makeRequest(request);
+  }
+
+  private async makeRequest(
+    request: string,
+  ): Promise<AccommodationAvailability> {
+    const apiURL = `https://ws.visbook.com/8/api`;
+    const requestUrl = `${apiURL}${request}`;
 
     const response = await fetch(requestUrl, {
       headers: {

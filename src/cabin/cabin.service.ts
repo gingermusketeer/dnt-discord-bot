@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { VisbookApi } from 'src/visbook/visbook.api';
+import { VisbookService } from 'src/visbook/visbook.service';
 import { CabinDetails, CabinApi } from './cabin.api';
 import { dateIsValid, getVisbookId } from './cabin.utils';
 
 @Injectable()
 export class CabinService {
   private readonly apiClient = new CabinApi();
-  private readonly visbookApiClient = new VisbookApi();
+
+  constructor(private readonly visbookService: VisbookService) {}
 
   async getRandomCabin(): Promise<CabinDetails> {
     const cabins = await this.apiClient.getCabins();
@@ -40,7 +41,7 @@ export class CabinService {
 
     if (cabinVisbookId === 0) return false;
 
-    const cabinIsAvailable = await this.visbookApiClient.isCabinAvailable(
+    const cabinIsAvailable = await this.visbookService.isCabinAvailable(
       cabinVisbookId,
       checkIn,
       checkOut,
@@ -70,12 +71,8 @@ export class CabinService {
 
     while ((await this.isCabinAvailable(cabin, checkIn, checkOut)) === false) {
       cabin = await this.getRandomCabin();
-      if (hasExceededTimeLimit(Date.now(), 60000)) {
-        /* TODO
-        - How long should response time (time limit) be? 1min? 5min?
-        - Do we have a limit on how many api calls we can make in a given time?
-        - Return undefined or specific message aka "could not find within time limit?"
-        */
+      const ONE_MIN_IN_MILLISECONDS = 1 * 60 * 1000;
+      if (hasExceededTimeLimit(Date.now(), ONE_MIN_IN_MILLISECONDS)) {
         return undefined;
       }
     }

@@ -1,12 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { VisbookApi } from './visbook.api';
 
 @Injectable()
 export class VisbookService {
-  private readonly apiClient = new VisbookApi();
+  constructor(private readonly visbookApi: VisbookApi) {}
 
-  constructor(private readonly configService: ConfigService) {}
+  async isCabinAvailable(
+    cabinVisbookId: number,
+    checkIn: string,
+    checkOut: string,
+  ): Promise<boolean> {
+    const visbookResponse = await this.visbookApi.getAccommodationAvailability(
+      cabinVisbookId,
+      checkIn,
+      checkOut,
+    );
 
-  async onModuleInit() {}
+    const accommodations = visbookResponse.accommodations;
+
+    if (accommodations === undefined) {
+      return false;
+    }
+
+    for (const accommodation of accommodations) {
+      if (accommodation.availability.available === true) return true;
+    }
+
+    return false;
+  }
 }
