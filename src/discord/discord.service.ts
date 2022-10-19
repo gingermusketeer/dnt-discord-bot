@@ -5,7 +5,6 @@ import {
   DMChannel,
   EmbedBuilder,
   GatewayIntentBits,
-  Interaction,
   Message,
   Partials,
   REST,
@@ -48,7 +47,10 @@ export class DiscordService implements OnModuleInit {
       console.log('discord ready');
     });
 
-    this.client.on('interactionCreate', this.onInteractionCreate);
+    this.client.on(
+      'interactionCreate',
+      this.slashCommandService.onInteractionCreate,
+    );
 
     this.client.on('messageCreate', this.onMessageCreate);
 
@@ -59,12 +61,6 @@ export class DiscordService implements OnModuleInit {
   onMessageCreate = (msg: Message) => {
     this.processMessage(msg).catch((error) => {
       console.error('failed to process message', error);
-    });
-  };
-
-  onInteractionCreate = (interaction: Interaction) => {
-    this.processInteraction(interaction).catch((error) => {
-      console.error('failed to process interaction', error);
     });
   };
 
@@ -95,16 +91,6 @@ export class DiscordService implements OnModuleInit {
     }
   }
 
-  async processInteraction(interaction: Interaction) {
-    if (!interaction.isChatInputCommand()) return;
-
-    const command = await this.slashCommandService.getCommand(
-      interaction.commandName,
-    );
-
-    await command?.handleCommand(interaction);
-  }
-
   async handleTextChannelMessage(msg: Message<boolean>) {
     const botWasMentioned = msg.mentions.has(this.botId);
 
@@ -125,7 +111,7 @@ export class DiscordService implements OnModuleInit {
     console.log(`Registering ${commands.length} application (/) commands...`);
 
     const data: any = await this.rest.put(
-      Routes.applicationCommands(this.botId),
+      Routes.applicationGuildCommands(this.botId, this.guildId),
       {
         body: commands,
       },
@@ -141,7 +127,10 @@ export class DiscordService implements OnModuleInit {
 
     console.log('Deleting application (/) commands...');
 
-    await this.rest.put(Routes.applicationCommands(this.botId), { body: [] });
+    await this.rest.put(
+      Routes.applicationGuildCommands(this.botId, this.guildId),
+      { body: [] },
+    );
 
     console.log('...done!');
   }
