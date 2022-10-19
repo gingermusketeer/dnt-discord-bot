@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   Client,
@@ -13,7 +13,7 @@ import {
   Routes,
   TextChannel,
 } from 'discord.js';
-import { BaseCommand } from 'src/slashCommand/slashCommand.interface';
+import { SlashCommandService } from 'src/slashCommand/slashCommand.service';
 
 @Injectable()
 export class DiscordService implements OnModuleInit {
@@ -28,7 +28,11 @@ export class DiscordService implements OnModuleInit {
     'DISCORD_BOT_TESTING_CHANNEL_ID',
   );
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(forwardRef(() => SlashCommandService))
+    private readonly slashCommandService: SlashCommandService,
+  ) {}
 
   async onModuleInit() {
     this.client = new Client({
@@ -94,12 +98,11 @@ export class DiscordService implements OnModuleInit {
   async processInteraction(interaction: Interaction) {
     if (!interaction.isChatInputCommand()) return;
 
-    const { commandName } = interaction;
+    const command = await this.slashCommandService.getCommand(
+      interaction.commandName,
+    );
 
-    const path = `${__dirname}/../slashCommand/commands/${commandName}.command.js`;
-    const command: { default: BaseCommand } = await import(path);
-
-    await command.default.handleCommand(interaction);
+    await command?.handleCommand(interaction);
   }
 
   async handleTextChannelMessage(msg: Message<boolean>) {
