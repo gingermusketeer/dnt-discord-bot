@@ -1,4 +1,8 @@
-import { SlashCommandBuilder } from 'discord.js';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
 
 export default class RandomCabinCommand {
   public static slashCommandBuilder = new SlashCommandBuilder()
@@ -17,4 +21,12 @@ export default class RandomCabinCommand {
         .setDescription('When do you want to leave (yyyy-mm-dd)?')
         .setRequired(true),
     );
+
+  public static async handleCommand(
+    interaction: ChatInputCommandInteraction<CacheType>,
+  ): Promise<void> {
+    const checkIn = interaction.options.getString('check-in', true);
+    const checkOut = interaction.options.getString('check-out', true);
+    await interaction.reply('Not quite there yet, but working on it!');
+  }
 }

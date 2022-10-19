@@ -1,11 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   Client,
   DMChannel,
   EmbedBuilder,
   GatewayIntentBits,
-  Interaction,
   Message,
   Partials,
   REST,
@@ -13,6 +12,7 @@ import {
   Routes,
   TextChannel,
 } from 'discord.js';
+import { SlashCommandService } from 'src/slashCommand/slashCommand.service';
 
 @Injectable()
 export class DiscordService implements OnModuleInit {
@@ -26,8 +26,13 @@ export class DiscordService implements OnModuleInit {
   private readonly testingChannelId = this.configService.getOrThrow(
     'DISCORD_BOT_TESTING_CHANNEL_ID',
   );
+  private readonly environment = this.configService.get('NODE_ENV');
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(forwardRef(() => SlashCommandService))
+    private readonly slashCommandService: SlashCommandService,
+  ) {}
 
   async onModuleInit() {
     this.client = new Client({
@@ -43,7 +48,10 @@ export class DiscordService implements OnModuleInit {
       console.log('discord ready');
     });
 
-    this.client.on('interactionCreate', this.onInteractionCreate);
+    this.client.on(
+      'interactionCreate',
+      this.slashCommandService.onInteractionCreate,
+    );
 
     this.client.on('messageCreate', this.onMessageCreate);
 
@@ -57,11 +65,28 @@ export class DiscordService implements OnModuleInit {
     });
   };
 
+  onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
+    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
+
+    this.deleteGlobalCommands()
+      .catch((error) =>
+        console.error('Failed to delete global slash commands', error),
+      )
+      .then(() => this.deleteGuildCommands())
+      .catch((error) =>
+        console.error('Failed to delete guild slash commands', error),
+      )
+      .then(() => this.registerSlashCommands(commands))
+      .catch((error) =>
+        console.error('Failed to refresh slash commands', error),
+      );
+  }
+
   async processMessage(msg: Message) {
     if (msg.author.bot) return;
 
     const isFromTestChannel = msg.channelId === this.testingChannelId;
-    const isProduction = this.configService.get('NODE_ENV') === 'production';
+    const isProduction = this.environment === 'production';
 
     if (
       msg.channel instanceof TextChannel &&
@@ -75,32 +100,71 @@ export class DiscordService implements OnModuleInit {
     }
   }
 
-  onInteractionCreate = (interaction: Interaction) => {
-    this.processInteraction(interaction).catch((error) => {
-      console.error('failed to process interaction', error);
+  async handleTextChannelMessage(msg: Message<boolean>) {
+    const botWasMentioned = msg.mentions.has(this.botId);
+
+    if (botWasMentioned) {
+      await msg.reply('Aye! :)');
+    }
+  }
+
+  async handleDm(msg: Message<boolean>) {
+    await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
+  }
+
+  private async registerSlashCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[],
+  ) {
+    if (this.environment === 'production') {
+      await this.registerGlobalCommands(commands);
+    }
+
+    await this.registerGuildCommands(commands);
+  }
+
+  private async registerGlobalCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[],
+  ) {
+    if (commands.length === 0) {
+      console.log('Deleting global application (/) commands...');
+    } else {
+      console.log(
+        `Registering ${commands.length} global application (/) commands...`,
+      );
+    }
+    await this.rest.put(Routes.applicationCommands(this.botId), {
+      body: commands,
     });
-  };
+    console.log(`...done!`);
+  }
 
-  async processInteraction(interaction: Interaction) {
-    //TODO Can we extract this to a new file? Maybe echo.service.ts or echo.module.ts etc?
-    if (!interaction.isChatInputCommand()) return;
-
-    const { commandName } = interaction;
-
-    if (commandName === 'ping') {
-      await interaction.reply('Pong!');
+  private async registerGuildCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[],
+  ) {
+    if (commands.length === 0) {
+      console.log('Deleting guild application (/) commands...');
+    } else {
+      console.log(
+        `Registering ${commands.length} guild application (/) commands...`,
+      );
     }
 
-    if (commandName === 'echo') {
-      const message = interaction.options.getString('message', true);
-      await interaction.reply(message);
-    }
+    await this.rest.put(
+      Routes.applicationGuildCommands(this.botId, this.guildId),
+      {
+        body: commands,
+      },
+    );
 
-    if (commandName === 'randomcabin') {
-      const checkIn = interaction.options.getString('check-in', true);
-      const checkOut = interaction.options.getString('check-out', true);
-      await interaction.reply('Not quite there yet, but working on it!');
-    }
+    console.log(`...done!`);
+  }
+
+  private async deleteGlobalCommands() {
+    await this.registerGlobalCommands([]);
+  }
+
+  private async deleteGuildCommands() {
+    await this.registerGuildCommands([]);
   }
 
   async sendMessage(channelId: string, embed: EmbedBuilder) {
@@ -120,45 +184,6 @@ export class DiscordService implements OnModuleInit {
       Array.from(channels.entries()).map(([id, channel]) => {
         return { name: channel?.name, id };
       }),
-    );
-  }
-
-  async handleTextChannelMessage(msg: Message<boolean>) {
-    const botWasMentioned = msg.mentions.has(this.botId);
-
-    if (botWasMentioned) {
-      await msg.reply('Aye! :)');
-    }
-  }
-
-  async handleDm(msg: Message<boolean>) {
-    await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
-  }
-
-  onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
-    this.refreshSlashCommands(commands).catch((error) =>
-      console.error('Failed to refresh slash commands', error),
-    );
-  }
-
-  private async refreshSlashCommands(
-    commands: RESTPostAPIApplicationCommandsJSONBody[],
-  ) {
-    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
-
-    console.log(
-      `Started refreshing ${commands.length} application (/) commands.`,
-    );
-
-    const data: any = await this.rest.put(
-      Routes.applicationCommands(this.botId),
-      {
-        body: commands,
-      },
-    );
-
-    console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`,
     );
   }
 }
