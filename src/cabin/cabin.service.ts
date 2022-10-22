@@ -79,34 +79,4 @@ export class CabinService {
 
     return cabin;
   }
-
-  async getAvailableCabins(
-    checkIn: string,
-    checkOut: string,
-  ): Promise<CabinDetails[] | undefined> {
-    if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
-      return undefined;
-    }
-
-    const cabins = await this.apiClient.getCabins();
-
-    // TODO we need cabin details here or change where cabin details are fetched
-    /*const areCabinsAvailable = await Promise.all(
-      cabins.map((cabin) =>
-        this.isCabinAvailable(cabin.node.id, checkIn, checkOut),
-      ),
-    );
-
-    const availableCabins = cabins.filter(
-      (_value, index) => areCabinsAvailable[index],
-    );
-
-    const cabinDetails = await Promise.all(
-      availableCabins.map((cabin) =>
-        this.apiClient.getCabinDetails(cabin.node.id),
-      ),
-    );
-
-    return cabinDetails;*/
-  }
 }
