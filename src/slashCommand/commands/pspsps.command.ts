@@ -4,14 +4,14 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-export default class PingCommand {
+export default class PspspsCommand {
   public static slashCommandBuilder = new SlashCommandBuilder()
-    .setName('ping')
-    .setDescription('Replies with pong!');
+    .setName('pspsps')
+    .setDescription('A purrrrfect surprise');
 
   public static async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
-    await interaction.reply('Pong!');
+    await interaction.reply('Meow :)');
   }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { VisbookService } from 'src/visbook/visbook.service';
-import { CabinDetails, CabinApi } from './cabin.api';
 import { dateIsValid, getVisbookId } from './cabin.utils';
+import { CabinApi } from './cabin.api';
+import { CabinDetails } from './cabin.interface';
 
 @Injectable()
 export class CabinService {
