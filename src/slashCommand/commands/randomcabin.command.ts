@@ -22,6 +22,9 @@ export default class RandomCabinCommand {
         .setRequired(true),
     );
 
+  // Defer response
+  // https://discordjs.guide/interactions/slash-commands.html#editing-responses
+
   public static async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
