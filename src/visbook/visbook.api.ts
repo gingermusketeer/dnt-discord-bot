@@ -28,6 +28,10 @@ export class VisbookApi {
       },
     });
 
+    if (!response.ok) {
+      throw new Error(`Visbook response not ok. Got: ${response.status}`);
+    }
+
     return response.json();
   }
 }
