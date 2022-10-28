@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { VisbookService } from 'src/visbook/visbook.service';
-import { dateIsValid, getVisbookId } from './cabin.utils';
-import { CabinApi } from './cabin.api';
-import { CabinDetails } from './cabin.interface';
+import { dateIsValid, getVisbookId } from './cabinUt.utils';
+import { CabinUtApi } from './cabinUt.api';
+import { CabinUtDetails } from './cabinUt.interface';
 
 @Injectable()
-export class CabinService {
-  private readonly apiClient = new CabinApi();
+export class CabinUtService {
+  private readonly apiClient = new CabinUtApi();
 
   constructor(private readonly visbookService: VisbookService) {}
 
-  async getRandomCabin(): Promise<CabinDetails> {
+  async getRandomCabin(): Promise<CabinUtDetails> {
     const cabins = await this.apiClient.getCabins();
     const cabin = cabins[Math.floor(Math.random() * cabins.length)];
     const { id } = cabin.node;
@@ -19,7 +19,7 @@ export class CabinService {
   }
 
   async isCabinAvailable(
-    cabin: CabinDetails,
+    cabin: CabinUtDetails,
     checkIn: string,
     checkOut: string,
   ): Promise<boolean> {
@@ -54,7 +54,7 @@ export class CabinService {
   async getRandomAvailableCabin(
     checkIn: string,
     checkOut: string,
-  ): Promise<CabinDetails | undefined> {
+  ): Promise<CabinUtDetails | undefined> {
     if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
       return undefined;
     }

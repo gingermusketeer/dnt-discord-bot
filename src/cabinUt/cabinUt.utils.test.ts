@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { dateIsValid, getVisbookId } from './cabin.utils';
+import { dateIsValid, getVisbookId } from './cabinUt.utils';
 
 describe('Validating input as date string yyyy-mm-dd', () => {
   it('returns true for valid date string', () => {

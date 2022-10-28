@@ -1,4 +1,4 @@
-export interface CabinDetails {
+export interface CabinUtDetails {
   __typename: string;
   id: number;
   status: string;

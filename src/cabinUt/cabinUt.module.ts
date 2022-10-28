@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { VisbookModule } from 'src/visbook/visbook.module';
-import { CabinService } from './cabin.service';
+import { CabinUtService } from './cabinUt.service';
 
 @Module({
   imports: [ConfigModule, VisbookModule],
-  providers: [CabinService],
-  exports: [CabinService],
+  providers: [CabinUtService],
+  exports: [CabinUtService],
 })
-export class CabinModule {}
+export class CabinUtModule {}

@@ -1,6 +1,6 @@
-import { CabinDetails } from './cabin.interface';
+import { CabinUtDetails } from './cabinUt.interface';
 
-export class CabinApi {
+export class CabinUtApi {
   async getCabins(): Promise<{ node: { id: number } }[]> {
     const query = {
       operationName: 'FindCabins',
@@ -36,7 +36,7 @@ export class CabinApi {
     } = body;
     return edges;
   }
-  async getCabinDetails(id: number): Promise<CabinDetails> {
+  async getCabinDetails(id: number): Promise<CabinUtDetails> {
     const query = {
       operationName: 'GetCabin',
       variables: { id },
