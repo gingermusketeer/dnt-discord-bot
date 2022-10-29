@@ -3,24 +3,30 @@ import {
   Interaction,
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord.js';
-import * as fs from 'fs';
 import { DiscordService } from 'src/discord/discord.service';
+import PingCommand from './commands/ping.command';
+import PspspsCommand from './commands/pspsps.command';
+import RandomCabinCommand from './commands/randomcabin.command';
 import { BaseCommand } from './slashCommand.interface';
 
 @Injectable()
 export class SlashCommandService implements OnModuleInit {
-  private commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-  private readonly commandPath = `${__dirname}/commands`;
+  private slashCommands: BaseCommand[];
 
   constructor(
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
-  ) {}
+  ) {
+    this.slashCommands = [
+      new PingCommand(),
+      new PspspsCommand(),
+      new RandomCabinCommand(),
+    ];
+  }
 
-  async onModuleInit() {
-    this.commands = await this.importCommands(this.commandPath);
-
-    this.discordService.onSlashCommandRefresh(this.commands);
+  onModuleInit() {
+    const slashCommandJson = this.generateSlashCommandJson();
+    this.discordService.onSlashCommandRefresh(slashCommandJson);
   }
 
   onInteractionCreate = (interaction: Interaction) => {
@@ -32,37 +38,18 @@ export class SlashCommandService implements OnModuleInit {
   async processInteraction(interaction: Interaction) {
     if (!interaction.isChatInputCommand()) return;
 
-    const command = await this.getCommand(interaction.commandName);
-
-    await command?.handleCommand(interaction);
+    for (const command of this.slashCommands) {
+      if (command.name === interaction.commandName) {
+        await command.handleCommand(interaction);
+      }
+    }
   }
 
-  async getCommand(commandName: string): Promise<BaseCommand | undefined> {
-    const path = `${__dirname}/./commands/${commandName}.command.js`;
-
-    if (!fs.existsSync(path)) {
-      return undefined;
+  generateSlashCommandJson(): RESTPostAPIApplicationCommandsJSONBody[] {
+    const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+    for (const command of this.slashCommands) {
+      slashCommands.push(command.slashCommandBuilder.toJSON());
     }
-
-    const command: { default: BaseCommand } = await import(path);
-    return command.default;
-  }
-
-  async importCommands(
-    commandPath: string,
-  ): Promise<RESTPostAPIApplicationCommandsJSONBody[]> {
-    const commandFiles = fs
-      .readdirSync(commandPath)
-      .filter((file) => file.endsWith('.command.js'));
-
-    const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-
-    for (const file of commandFiles) {
-      const path = `${commandPath}/${file}`;
-      const command: { default: BaseCommand } = await import(path);
-      commands.push(command.default.slashCommandBuilder.toJSON());
-    }
-
-    return commands;
+    return slashCommands;
   }
 }

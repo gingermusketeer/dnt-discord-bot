@@ -1,15 +1,25 @@
+import { Injectable } from '@nestjs/common';
 import {
   CacheType,
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+import { BaseCommand } from '../slashCommand.interface';
 
-export default class PspspsCommand {
-  public static slashCommandBuilder = new SlashCommandBuilder()
-    .setName('pspsps')
-    .setDescription('A purrrrfect surprise');
+@Injectable()
+export default class PspspsCommand implements BaseCommand {
+  public readonly name: string;
+  public readonly slashCommandBuilder: SlashCommandBuilder;
 
-  public static async handleCommand(
+  constructor() {
+    this.name = 'pspsps';
+
+    this.slashCommandBuilder = new SlashCommandBuilder()
+      .setName(this.name)
+      .setDescription('A purrrrfect surprise');
+  }
+
+  public async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.reply('Meow :)');
