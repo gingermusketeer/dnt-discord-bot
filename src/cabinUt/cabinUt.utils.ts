@@ -16,6 +16,14 @@ export function dateIsValid(dateString: string): boolean {
 }
 
 export function getVisbookId(url: string): number {
+  if (url === null) {
+    return 0;
+  }
+
+  if (!url.includes('reservations')) {
+    return 0;
+  }
+
   const urlParts = url.split('/');
   for (const part of urlParts) {
     const int = parseInt(part, 10);

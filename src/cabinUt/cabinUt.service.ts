@@ -28,16 +28,6 @@ export class CabinUtService {
       return false;
     }
 
-    if (cabin.bookingUrl === null) {
-      console.log('no booking url');
-      return false;
-    }
-
-    if (!cabin.bookingUrl.includes('reservations')) {
-      console.log('not a reservations url');
-      return false;
-    }
-
     const cabinVisbookId = getVisbookId(cabin.bookingUrl);
 
     if (cabinVisbookId === 0) return false;
