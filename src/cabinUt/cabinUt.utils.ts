@@ -20,10 +20,6 @@ export function getVisbookId(url: string): number {
     return 0;
   }
 
-  if (!url.includes('reservations')) {
-    return 0;
-  }
-
   const urlParts = url.split('/');
   for (const part of urlParts) {
     const int = parseInt(part, 10);
@@ -35,4 +31,12 @@ export function getVisbookId(url: string): number {
   }
 
   return 0;
+}
+
+export function isReservationsUrl(url: string): boolean {
+  if (url.includes('reservations')) {
+    return true;
+  }
+
+  return false;
 }
