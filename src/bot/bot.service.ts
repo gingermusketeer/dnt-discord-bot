@@ -71,8 +71,9 @@ export class BotService implements OnModuleInit {
       'DISCORD_DAILY_CABIN_CHANNEL_ID',
     );
     const cabin = await this.cabinService.getRandomCabin();
-    const text = convert(cabin.description);
+    if (cabin === null) return;
 
+    const text = convert(cabin.description);
     const imageUrl = `https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/${cabin.media[0].uri}`;
     const embed = new EmbedBuilder()
       .setColor(0xd82d20)
