@@ -1,27 +1,24 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CabinUtApi } from 'src/cabinUt/cabinUt.api';
-import { getVisbookId } from 'src/cabinUt/cabinUt.utils';
 import { Logger } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { CabinDatabaseApi } from './cabinDatabase.api';
 import { SupabaseCabin } from './cabinDatabase.interface';
 import { PostgrestResponse } from '@supabase/supabase-js';
+import { CabinUtService } from 'src/cabinUt/cabinUt.service';
 
 @Injectable()
 export class CabinDatabaseService implements OnModuleInit {
   private readonly logger = new Logger(CabinDatabaseService.name);
   private task: cron.ScheduledTask;
-  private cabinUtApi: CabinUtApi;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly cabinDatabaseApi: CabinDatabaseApi,
+    private readonly cabinUtService: CabinUtService,
   ) {}
 
   async onModuleInit() {
-    this.cabinUtApi = new CabinUtApi();
-
     if (this.configService.get('NODE_ENV') === 'production') {
       this.task = cron.schedule('0 1 * * *', this.on1am);
       this.logger.log('setup 1am cabin update');
@@ -36,44 +33,15 @@ export class CabinDatabaseService implements OnModuleInit {
   };
 
   private async upsertCabinsFromUt() {
-    const cabins = await this.cabinUtApi.getCabins();
-    const supabaseCabins = await this.getCabinUtDetailsAsSupabaseCabins(cabins);
+    const cabins = await this.cabinUtService.getCabins();
+    const supabaseCabins =
+      await this.cabinUtService.getCabinDetailsAsSupabaseCabins(cabins);
     const errors = await this.cabinDatabaseApi.upsertCabins(supabaseCabins);
 
     if (errors.length > 0) {
       console.log('errors');
       throw new Error(`${errors}`);
     }
-  }
-
-  private async getCabinUtDetailsAsSupabaseCabins(
-    cabins: {
-      node: {
-        id: number;
-      };
-    }[],
-  ): Promise<Omit<SupabaseCabin, 'id'>[]> {
-    const supabaseCabins = [];
-    for (const cabin of cabins) {
-      const cabinDetails = await this.cabinUtApi.getCabinDetails(cabin.node.id);
-      const bookingUrl = cabinDetails.bookingUrl;
-      const visbookId = getVisbookId(bookingUrl);
-      const description = cabinDetails.description;
-
-      supabaseCabins.push({
-        utId: cabinDetails.id,
-        visbookId: visbookId,
-        description: description,
-        bookingUrl: bookingUrl,
-        name: cabinDetails.name,
-        lastUpdatedAt: new Date().toISOString(),
-        geometry: cabinDetails.geometry,
-        media: cabinDetails.media,
-        openingHours: cabinDetails.openingHours,
-      });
-    }
-
-    return supabaseCabins;
   }
 
   async getRandomCabin(options?: {
