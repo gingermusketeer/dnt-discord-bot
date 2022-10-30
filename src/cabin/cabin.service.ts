@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SupabaseCabin } from 'src/cabinDatabase/cabinDatabase.interface';
 import { CabinDatabaseService } from 'src/cabinDatabase/cabinDatabase.service';
 import { VisbookService } from 'src/visbook/visbook.service';
-import { hasExceededTimeLimit } from './cabin.utils';
+import { dateIsValid, hasExceededTimeLimit } from './cabin.utils';
 
 @Injectable()
 export class CabinService {
