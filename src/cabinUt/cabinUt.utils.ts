@@ -34,9 +34,17 @@ export function getVisbookId(url: string): number {
 }
 
 export function isReservationsUrl(url: string): boolean {
-  if (url.includes('reservations')) {
-    return true;
-  }
+  if (!isValidUrl(url)) return false;
 
-  return false;
+  const parsedUrl = new URL(url);
+  return parsedUrl.hostname.includes('reservations');
+}
+
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+  } catch {
+    return false;
+  }
+  return true;
 }
