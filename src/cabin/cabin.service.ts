@@ -21,6 +21,11 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<SupabaseCabin | null> {
+    if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
+      console.log('invalid date(s)');
+      return null;
+    }
+
     const startTime = Date.now();
     do {
       const cabin = await this.cabinDatabaseService.getRandomCabin();

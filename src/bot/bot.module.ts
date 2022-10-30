@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ActivityDatabaseModule } from 'src/activityDatabase/activityDatabase.module';
-import { CabinUtModule } from 'src/cabinUt/cabinUt.module';
+import { CabinModule } from 'src/cabin/cabin.module';
 import { DiscordModule } from 'src/discord/discord.module';
 import { SlashCommandModule } from 'src/slashCommand/slashCommand.module';
 import { BotService } from './bot.service';
@@ -11,7 +11,7 @@ import { BotService } from './bot.service';
     ActivityDatabaseModule,
     ConfigModule,
     DiscordModule,
-    CabinUtModule,
+    CabinModule,
     SlashCommandModule,
   ],
   providers: [BotService],
