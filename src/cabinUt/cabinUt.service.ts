@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { VisbookService } from 'src/visbook/visbook.service';
-import { dateIsValid, getVisbookId } from './cabinUt.utils';
+import { dateIsValid, getVisbookId, isReservationsUrl } from './cabinUt.utils';
 import { CabinUtApi } from './cabinUt.api';
 import { CabinUtDetails } from './cabinUt.interface';
 
@@ -28,19 +28,12 @@ export class CabinUtService {
       return false;
     }
 
-    if (cabin.bookingUrl === null) {
-      console.log('no booking url');
-      return false;
-    }
-
-    if (!cabin.bookingUrl.includes('reservations')) {
-      console.log('not a reservations url');
-      return false;
-    }
-
+    const cabinHasReservationsUrl = isReservationsUrl(cabin.bookingUrl);
     const cabinVisbookId = getVisbookId(cabin.bookingUrl);
 
-    if (cabinVisbookId === 0) return false;
+    if (!cabinHasReservationsUrl && cabinVisbookId === 0) {
+      return false;
+    }
 
     const cabinIsAvailable = await this.visbookService.isCabinAvailable(
       cabinVisbookId,

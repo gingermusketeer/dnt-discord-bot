@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { dateIsValid, getVisbookId } from './cabinUt.utils';
+import { dateIsValid, getVisbookId, isReservationsUrl } from './cabinUt.utils';
 
 describe('Validating input as date string yyyy-mm-dd', () => {
   it('returns true for valid date string', () => {
@@ -30,5 +30,24 @@ describe('Extract visbook cabin id from booking URL', () => {
   it('returns 0 if not found', () => {
     const url = 'https://reservations.visbook.com';
     assert.deepEqual(getVisbookId(url), 0);
+  });
+});
+
+describe('Determine if booking URL points to a reservations page', () => {
+  it('returns true if url contains reservations', () => {
+    const url = 'https://reservations.visbook.com/6093';
+    assert.deepEqual(isReservationsUrl(url), true);
+  });
+  it('returns false if url does not contain reservations', () => {
+    const url = 'https://booking.visbook.com/no/6093';
+    assert.deepEqual(isReservationsUrl(url), false);
+  });
+  it('returns false for an email address', () => {
+    const url = 'reservations@dnt.hytte';
+    assert.deepEqual(isReservationsUrl(url), false);
+  });
+  it('returns false for text only', () => {
+    const url = 'For reservations call us at 123 456';
+    assert.deepEqual(isReservationsUrl(url), false);
   });
 });
