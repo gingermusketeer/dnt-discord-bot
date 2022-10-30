@@ -1,14 +1,16 @@
 import { CabinUtDetails } from './cabinUt.interface';
 
 export class CabinUtApi {
-  async getCabins(): Promise<{ node: { id: number } }[]> {
+  async getCabins(
+    endCursor: string | null = null,
+  ): Promise<{ node: { id: number } }[]> {
     const query = {
       operationName: 'FindCabins',
       variables: {
         input: {
           pageOptions: {
             limit: 500,
-            afterCursor: null,
+            afterCursor: endCursor,
             orderByDirection: 'DESC',
             orderBy: 'ID',
           },
@@ -29,11 +31,20 @@ export class CabinUtApi {
     };
 
     const body = await this.makeRequest(query);
+    endCursor = body.data.ntb_findCabins.pageInfo.endCursor;
     const {
       data: {
         ntb_findCabins: { edges },
       },
     } = body;
+
+    if (endCursor !== null) {
+      const cabins = await this.getCabins(endCursor);
+      for (const cabin of cabins) {
+        edges.push(cabin);
+      }
+    }
+
     return edges;
   }
   async getCabinDetails(id: number): Promise<CabinUtDetails> {
