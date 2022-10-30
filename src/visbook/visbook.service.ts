@@ -28,4 +28,22 @@ export class VisbookService {
 
     return false;
   }
+
+  // TODO This is a suggestion to prevent exceptions getting in the way of finding a random available cabin
+  async isBookingEnabled(
+    cabinVisbookId: number,
+    checkIn: string,
+    checkOut: string,
+  ): Promise<boolean> {
+    try {
+      await this.visbookApi.getAccommodationAvailability(
+        cabinVisbookId,
+        checkIn,
+        checkOut,
+      );
+    } catch {
+      return false;
+    }
+    return true;
+  }
 }
