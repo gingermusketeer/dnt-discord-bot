@@ -21,12 +21,15 @@ export class CabinService {
     checkIn: string,
     checkOut: string,
   ): Promise<SupabaseCabin | null> {
+    // TODO move validation to randomcabin command
     if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
       console.log('invalid date(s)');
       return null;
     }
 
+    const ONE_MIN_IN_MILLISECONDS = 1 * 60 * 1000;
     const startTime = Date.now();
+
     do {
       const cabin = await this.cabinDatabaseService.getRandomCabin();
       if (cabin === null) return null;
@@ -44,14 +47,9 @@ export class CabinService {
         checkOut,
       );
       if (cabinIsAvailable) return cabin;
-
-      const ONE_MIN_IN_MILLISECONDS = 1 * 60 * 1000;
-      if (
-        hasExceededTimeLimit(startTime, Date.now(), ONE_MIN_IN_MILLISECONDS)
-      ) {
-        return null;
-      }
-    } while (true === true);
+    } while (
+      !hasExceededTimeLimit(startTime, Date.now(), ONE_MIN_IN_MILLISECONDS)
+    );
 
     return null;
   }
