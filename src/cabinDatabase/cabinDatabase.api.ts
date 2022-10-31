@@ -5,6 +5,7 @@ import {
   PostgrestResponse,
   SupabaseClient,
 } from '@supabase/supabase-js';
+import { SupabaseCabin } from './cabinDatabase.interface';
 
 @Injectable()
 export class CabinDatabaseApi implements OnModuleInit {
@@ -19,7 +20,7 @@ export class CabinDatabaseApi implements OnModuleInit {
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
-  async upsertCabins(cabins: any[]) {
+  async upsertCabins(cabins: Partial<SupabaseCabin>[]) {
     const errors = [];
     for (const cabin of cabins) {
       const { error } = await this.supabase.from('cabins').upsert(cabin, {});
@@ -33,7 +34,7 @@ export class CabinDatabaseApi implements OnModuleInit {
 
   async getRandomBookableCabins(
     limit = this.CABIN_REQUEST_DEFAULT_LIMIT,
-  ): Promise<PostgrestResponse<any>> {
+  ): Promise<PostgrestResponse<SupabaseCabin>> {
     return await this.supabase
       .rpc('get_random_cabins')
       .gt('visbookId', 0)
@@ -42,7 +43,7 @@ export class CabinDatabaseApi implements OnModuleInit {
 
   async getAnyRandomCabins(
     limit = this.CABIN_REQUEST_DEFAULT_LIMIT,
-  ): Promise<PostgrestResponse<any>> {
+  ): Promise<PostgrestResponse<SupabaseCabin>> {
     return await this.supabase.rpc('get_random_cabins').limit(limit);
   }
 }

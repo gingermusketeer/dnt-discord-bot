@@ -59,7 +59,7 @@ export class CabinDatabaseService implements OnModuleInit {
     mustBeBookable?: boolean;
     limit?: number;
   }): Promise<SupabaseCabin[] | null> {
-    let response: PostgrestResponse<any>;
+    let response: PostgrestResponse<SupabaseCabin>;
     if (options?.mustBeBookable) {
       response = await this.cabinDatabaseApi.getRandomBookableCabins(
         options?.limit,
