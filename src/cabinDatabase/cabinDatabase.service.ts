@@ -65,7 +65,7 @@ export class CabinDatabaseService implements OnModuleInit {
         options?.limit,
       );
     }
-    response = await this.cabinDatabaseApi.getRandomCabins(options?.limit);
+    response = await this.cabinDatabaseApi.getAnyRandomCabins(options?.limit);
     this.evaluateResponse(response);
 
     return response.data;

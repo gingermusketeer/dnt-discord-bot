@@ -40,7 +40,7 @@ export class CabinDatabaseApi implements OnModuleInit {
       .limit(limit);
   }
 
-  async getRandomCabins(
+  async getAnyRandomCabins(
     limit = this.CABIN_REQUEST_DEFAULT_LIMIT,
   ): Promise<PostgrestResponse<any>> {
     return await this.supabase.rpc('get_random_cabins').limit(limit);
