@@ -73,7 +73,7 @@ interface Link {
   title: string;
   __typename: string;
 }
-interface OpeningHour {
+export interface OpeningHour {
   allYear: boolean;
   from: string;
   to: string;
@@ -85,7 +85,7 @@ interface SuitableFor {
   name: string;
   __typename: string;
 }
-interface Media {
+export interface Media {
   id: number;
   tags?: string[];
   altText?: any;
@@ -104,7 +104,7 @@ interface Owner {
   type: string;
   __typename: string;
 }
-interface Geometry {
+export interface Geometry {
   type: string;
   coordinates: number[];
 }
