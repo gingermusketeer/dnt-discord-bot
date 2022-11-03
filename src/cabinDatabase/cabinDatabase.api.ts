@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   createClient,
@@ -8,13 +8,11 @@ import {
 import { SupabaseCabin } from './cabinDatabase.interface';
 
 @Injectable()
-export class CabinDatabaseApi implements OnModuleInit {
+export class CabinDatabaseApi {
   private supabase: SupabaseClient;
   private CABIN_REQUEST_DEFAULT_LIMIT = 1000; // TODO 1000 is an artificial limit to prevent limit undefined
 
-  constructor(private readonly configService: ConfigService) {}
-
-  onModuleInit() {
+  constructor(private readonly configService: ConfigService) {
     const supabaseUrl = this.configService.getOrThrow('SUPABASE_URL');
     const supabaseKey = this.configService.getOrThrow('SUPABASE_KEY');
     this.supabase = createClient(supabaseUrl, supabaseKey);
