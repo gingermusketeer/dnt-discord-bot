@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { VisbookApi } from './visbook.api';
 
 @Injectable()
 export class VisbookService {
+  private readonly logger = new Logger(VisbookService.name);
+
   constructor(private readonly visbookApi: VisbookApi) {}
 
   async isCabinAvailable(
@@ -41,7 +43,11 @@ export class VisbookService {
         checkIn,
         checkOut,
       );
-    } catch {
+    } catch (error) {
+      this.logger.error(
+        'getAccommodationAvailability failed with error',
+        error,
+      );
       return false;
     }
     return true;

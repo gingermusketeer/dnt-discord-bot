@@ -54,6 +54,7 @@ class CabinUtApi {
 }
 
 class VisbookService {
+  -logger
   -visbookApi
   +isBookingEnabled()
   +isCabinAvailable()
