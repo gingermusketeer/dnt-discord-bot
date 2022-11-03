@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SupabaseCabin } from 'src/cabinDatabase/cabinDatabase.interface';
+import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 import { CabinUtApi } from './cabinUt.api';
 import { getVisbookId } from './cabinUt.utils';
 
@@ -11,21 +11,21 @@ export class CabinUtService {
     return this.cabinUtApi.getCabins();
   }
 
-  async getCabinDetailsAsSupabaseCabins(
+  async getCabinSummaries(
     cabins: {
       node: {
         id: number;
       };
     }[],
-  ): Promise<Omit<SupabaseCabin, 'id'>[]> {
-    const supabaseCabins = [];
+  ): Promise<Omit<CabinSummary, 'id'>[]> {
+    const cabinSummaries = [];
     for (const cabin of cabins) {
       const cabinDetails = await this.cabinUtApi.getCabinDetails(cabin.node.id);
       const bookingUrl = cabinDetails.bookingUrl;
       const visbookId = getVisbookId(bookingUrl);
       const description = cabinDetails.description;
 
-      supabaseCabins.push({
+      cabinSummaries.push({
         utId: cabinDetails.id,
         visbookId: visbookId,
         description: description,
@@ -38,6 +38,6 @@ export class CabinUtService {
       });
     }
 
-    return supabaseCabins;
+    return cabinSummaries;
   }
 }

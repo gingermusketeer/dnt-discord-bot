@@ -44,7 +44,7 @@ class CabinDatabaseApi {
 class CabinUtService {
   -cabinUtApi
   +getCabins()
-  +getCabinDetailsAsSupabaseCabins()
+  +getCabinSummaries()
 }
 
 class CabinUtApi {

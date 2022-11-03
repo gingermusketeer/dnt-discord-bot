@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { CabinDatabaseApi } from './cabinDatabase.api';
-import { SupabaseCabin } from './cabinDatabase.interface';
+import { CabinSummary } from './cabinDatabase.interface';
 import { PostgrestResponse } from '@supabase/supabase-js';
 import { CabinUtService } from 'src/cabinUt/cabinUt.service';
 
@@ -34,9 +34,8 @@ export class CabinDatabaseService implements OnModuleInit {
 
   private async upsertCabinsFromUt() {
     const cabins = await this.cabinUtService.getCabins();
-    const supabaseCabins =
-      await this.cabinUtService.getCabinDetailsAsSupabaseCabins(cabins);
-    const errors = await this.cabinDatabaseApi.upsertCabins(supabaseCabins);
+    const cabinSummaries = await this.cabinUtService.getCabinSummaries(cabins);
+    const errors = await this.cabinDatabaseApi.upsertCabins(cabinSummaries);
 
     if (errors.length > 0) {
       console.log('errors');
@@ -46,7 +45,7 @@ export class CabinDatabaseService implements OnModuleInit {
 
   async getRandomCabin(options?: {
     mustBeBookable?: boolean;
-  }): Promise<SupabaseCabin | null> {
+  }): Promise<CabinSummary | null> {
     const cabins = await this.getRandomCabins({
       mustBeBookable: options?.mustBeBookable,
       limit: 1,
@@ -58,8 +57,8 @@ export class CabinDatabaseService implements OnModuleInit {
   async getRandomCabins(options?: {
     mustBeBookable?: boolean;
     limit?: number;
-  }): Promise<SupabaseCabin[] | null> {
-    let response: PostgrestResponse<SupabaseCabin>;
+  }): Promise<CabinSummary[] | null> {
+    let response: PostgrestResponse<CabinSummary>;
     if (options?.mustBeBookable) {
       response = await this.cabinDatabaseApi.getRandomBookableCabins(
         options?.limit,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SupabaseCabin } from 'src/cabinDatabase/cabinDatabase.interface';
+import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 import { CabinDatabaseService } from 'src/cabinDatabase/cabinDatabase.service';
 import { VisbookService } from 'src/visbook/visbook.service';
 import { dateIsValid, hasExceededTimeLimit } from './cabin.utils';
@@ -12,7 +12,7 @@ export class CabinService {
   ) {}
 
 
-  async getRandomCabin(): Promise<SupabaseCabin | null> {
+  async getRandomCabin(): Promise<CabinSummary | null> {
     const cabins = await this.cabinDatabaseService.getRandomCabin();
     return cabins;
   }
@@ -20,7 +20,7 @@ export class CabinService {
   async getRandomAvailableCabin(
     checkIn: string,
     checkOut: string,
-  ): Promise<SupabaseCabin | null> {
+  ): Promise<CabinSummary | null> {
     // TODO move validation to randomcabin command
     if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
       console.log('invalid date(s)');

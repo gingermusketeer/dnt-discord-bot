@@ -1,6 +1,6 @@
 import { Geometry, Media, OpeningHour } from 'src/cabinUt/cabinUt.interface';
 
-export interface SupabaseCabin {
+export interface CabinSummary {
   id: number;
   updatedAt: string;
   utId: number;
