@@ -31,7 +31,7 @@ export class CabinUtService {
         description: description,
         bookingUrl: bookingUrl,
         name: cabinDetails.name,
-        lastUpdatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         geometry: cabinDetails.geometry,
         media: cabinDetails.media,
         openingHours: cabinDetails.openingHours,
