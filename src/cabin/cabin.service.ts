@@ -11,7 +11,6 @@ export class CabinService {
     private readonly cabinDatabaseService: CabinDatabaseService,
   ) {}
 
-
   async getRandomCabin(): Promise<CabinSummary | null> {
     const cabins = await this.cabinDatabaseService.getRandomCabin();
     return cabins;

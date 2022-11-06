@@ -3,6 +3,7 @@ import {
   Interaction,
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord.js';
+import { CabinService } from 'src/cabin/cabin.service';
 import { DiscordService } from 'src/discord/discord.service';
 import PingCommand from './commands/ping.command';
 import PspspsCommand from './commands/pspsps.command';
@@ -16,11 +17,12 @@ export class SlashCommandService implements OnModuleInit {
   constructor(
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
+    private readonly cabinService: CabinService,
   ) {
     this.slashCommands = [
       new PingCommand(),
       new PspspsCommand(),
-      new RandomCabinCommand(),
+      new RandomCabinCommand(this.cabinService),
     ];
   }
 
