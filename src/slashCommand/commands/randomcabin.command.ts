@@ -41,8 +41,6 @@ export default class RandomCabinCommand implements BaseCommand {
       );
   }
 
-  onModuleInit() {}
-
   public async handleCommand(
     interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
