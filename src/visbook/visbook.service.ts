@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { BookingDates } from 'src/slashCommand/commands/randomcabin.utils';
 import { VisbookApi } from './visbook.api';
 
 @Injectable()
@@ -9,13 +10,11 @@ export class VisbookService {
 
   async isCabinAvailable(
     cabinVisbookId: number,
-    checkIn: string,
-    checkOut: string,
+    bookingDates: BookingDates,
   ): Promise<boolean> {
     const visbookResponse = await this.visbookApi.getAccommodationAvailability(
       cabinVisbookId,
-      checkIn,
-      checkOut,
+      bookingDates,
     );
 
     const accommodations = visbookResponse.accommodations;
@@ -34,14 +33,12 @@ export class VisbookService {
   // TODO This is a suggestion to prevent exceptions getting in the way of finding a random available cabin
   async isBookingEnabled(
     cabinVisbookId: number,
-    checkIn: string,
-    checkOut: string,
+    bookingDates: BookingDates,
   ): Promise<boolean> {
     try {
       await this.visbookApi.getAccommodationAvailability(
         cabinVisbookId,
-        checkIn,
-        checkOut,
+        bookingDates,
       );
     } catch (error) {
       this.logger.warn(

@@ -1,3 +1,4 @@
+import { BookingDates } from 'src/slashCommand/commands/randomcabin.utils';
 import { AccommodationAvailability } from './visbook.interface';
 
 /*
@@ -7,9 +8,10 @@ Visbook API docs: https://ws.visbook.com/8/docs/index.html
 export class VisbookApi {
   async getAccommodationAvailability(
     cabinVisbookId: number,
-    checkIn: string,
-    checkOut: string,
+    bookingDates: BookingDates,
   ): Promise<AccommodationAvailability> {
+    const checkIn = bookingDates.checkIn.toISOString().split('T')[0];
+    const checkOut = bookingDates.checkOut.toISOString().split('T')[0];
     const request = `/${cabinVisbookId}/webproducts/${checkIn}/${checkOut}`;
     return await this.makeRequest(request);
   }

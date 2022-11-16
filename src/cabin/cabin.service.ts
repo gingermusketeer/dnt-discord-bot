@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 import { CabinDatabaseService } from 'src/cabinDatabase/cabinDatabase.service';
+import {
+  BookingDates,
+  BookingDatesSchema,
+} from 'src/slashCommand/commands/randomcabin.utils';
 import { VisbookService } from 'src/visbook/visbook.service';
-import { dateIsValid, hasExceededTimeLimit } from './cabin.utils';
+import { hasExceededTimeLimit } from './cabin.utils';
+
 
 @Injectable()
 export class CabinService {
@@ -17,15 +22,8 @@ export class CabinService {
   }
 
   async getRandomAvailableCabin(
-    checkIn: string,
-    checkOut: string,
+    bookingDates: BookingDates,
   ): Promise<CabinSummary | null> {
-    // TODO move validation to randomcabin command
-    if (!dateIsValid(checkIn) || !dateIsValid(checkOut)) {
-      console.log('invalid date(s)');
-      return null;
-    }
-
     const ONE_MIN_IN_MILLISECONDS = 1 * 60 * 1000;
     const startTime = Date.now();
 
@@ -35,15 +33,13 @@ export class CabinService {
 
       const cabinIsBookable = await this.visbookService.isBookingEnabled(
         cabin.visbookId,
-        checkIn,
-        checkOut,
+        bookingDates,
       );
       if (!cabinIsBookable) continue;
 
       const cabinIsAvailable = await this.visbookService.isCabinAvailable(
         cabin.visbookId,
-        checkIn,
-        checkOut,
+        bookingDates,
       );
       if (cabinIsAvailable) return cabin;
     } while (

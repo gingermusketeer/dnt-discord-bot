@@ -9,6 +9,7 @@ import { convert } from 'html-to-text';
 import { CabinService } from 'src/cabin/cabin.service';
 import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 import { BaseCommand } from '../slashCommand.interface';
+import { BookingDates, BookingDatesSchema } from './randomcabin.utils';
 
 @Injectable()
 export default class RandomCabinCommand implements BaseCommand {
@@ -48,8 +49,6 @@ export default class RandomCabinCommand implements BaseCommand {
     const checkIn = interaction.options.getString('check-in', false);
     const checkOut = interaction.options.getString('check-out', false);
 
-    // TODO Validate date here!?
-
     if (checkIn === null || checkOut === null) {
       await this.handleRandomCabinWithoutDates(interaction);
     } else {
@@ -73,20 +72,29 @@ export default class RandomCabinCommand implements BaseCommand {
 
   private async handleRandomCabinWithDates(
     interaction: ChatInputCommandInteraction<CacheType>,
-    checkIn: string,
-    checkOut: string,
+    checkIn: string | null,
+    checkOut: string | null,
   ): Promise<void> {
-    const cabin = await this.cabinService.getRandomAvailableCabin(
+    const bookingDates = await new BookingDatesSchema().validate(
       checkIn,
       checkOut,
     );
+
+    if (bookingDates === undefined) {
+      await interaction.editReply(
+        `Looks like there's something wrong with your dates.`,
+      );
+      return;
+    }
+
+    const cabin = await this.cabinService.getRandomAvailableCabin(bookingDates);
 
     if (cabin === null) {
       await interaction.editReply(
         `I'm sorry, but looks like I could not find any cabin for you. :crying_cat_face:`,
       );
     } else {
-      this.editReplyWithCabin(interaction, cabin);
+      this.editReplyWithCabin(interaction, cabin, bookingDates);
     }
   }
 
@@ -108,11 +116,33 @@ export default class RandomCabinCommand implements BaseCommand {
   private async editReplyWithCabin(
     interaction: ChatInputCommandInteraction<CacheType>,
     cabin: CabinSummary,
+    bookingDates?: BookingDates,
   ): Promise<void> {
-    const embed = await this.buildCabinEmbed(cabin);
+    const messageEmbed = await this.buildCabinEmbed(cabin);
+
+    const dateOptions: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+
+    const messageContent =
+      bookingDates === undefined
+        ? `How about going to ${cabin.name}? :heart_eyes_cat:`
+        : `How about going to ${
+            cabin.name
+          } from ${bookingDates.checkIn.toLocaleDateString(
+            'en-GB',
+            dateOptions,
+          )} to ${bookingDates.checkOut.toLocaleDateString(
+            'en-GB',
+            dateOptions,
+          )}? :heart_eyes_cat:`;
+
     await interaction.editReply({
-      content: `How about going to ${cabin.name}? :heart_eyes_cat:`,
-      embeds: [embed],
+      content: messageContent,
+      embeds: [messageEmbed],
     });
   }
 }
