@@ -44,8 +44,8 @@ export class VisbookService {
         checkOut,
       );
     } catch (error) {
-      this.logger.error(
-        'getAccommodationAvailability failed with error',
+      this.logger.warn(
+        'getAccommodationAvailability failed with error via isBookingEnabled',
         error,
       );
       return false;
