@@ -22,12 +22,11 @@ The bot replies to dms and mentions in text channels with a generic message.
 ### /randomcabin
 
 ```
+/randomcabin
 /randomcabin check-in: yyyy-mm-dd check-out: yyyy-mm-dd
 ```
 
-_This feature is still work in progress._
-
-Want to go on a cabin trip but don't know where to go? Tell the bot when you'd like to go and it finds a random cabin for you that is available at the desired dates. The command is available in text channels and dms.
+Want to go on a cabin trip but don't know where to go? Tell the bot when you'd like to go and it finds a random cabin for you that is available at the desired dates. If you omit the dates, you will receive any random cabin instead. Be aware, that we cannot check the availability of all cabins (yet), so providing dates limits the pool of potential cabins. To protect your privacy, Turbo's response is always private - nobody will know that you asked...
 
 ## :red_circle: Other features
 
