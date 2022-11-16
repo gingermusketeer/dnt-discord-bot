@@ -10,8 +10,13 @@ export class VisbookApi {
     cabinVisbookId: number,
     bookingDates: BookingDates,
   ): Promise<AccommodationAvailability> {
-    const checkIn = bookingDates.checkIn.toISOString().split('T')[0];
-    const checkOut = bookingDates.checkOut.toISOString().split('T')[0];
+    const formatAsYYYYMMDD = (date: Date) => {
+      // Target format is yyyy-mm-dd
+      return date.toISOString().split('T')[0];
+    };
+
+    const checkIn = formatAsYYYYMMDD(bookingDates.checkIn);
+    const checkOut = formatAsYYYYMMDD(bookingDates.checkOut);
     const request = `/${cabinVisbookId}/webproducts/${checkIn}/${checkOut}`;
     return await this.makeRequest(request);
   }
