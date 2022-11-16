@@ -40,7 +40,7 @@ export class BookingDatesSchema {
         abortEarly: false,
       });
     } catch (e) {
-      if (e instanceof ValidationError) {
+      if (e instanceof ValidationError || e instanceof TypeError) {
         console.warn(e.message);
         return;
       }
