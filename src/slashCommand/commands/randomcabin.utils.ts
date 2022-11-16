@@ -1,4 +1,4 @@
-import yup from 'yup';
+import { object, date, ValidationError } from 'yup';
 import { startOfDay, addDays } from 'date-fns';
 
 export type BookingDates = { checkIn: Date; checkOut: Date };
@@ -7,13 +7,11 @@ export class BookingDatesSchema {
   private schema;
 
   constructor() {
-    this.schema = yup.object({
-      checkIn: yup
-        .date()
+    this.schema = object({
+      checkIn: date()
         .required('Check-in is required')
         .min(startOfDay(new Date()), 'Check-in cannot be in the past'),
-      checkOut: yup
-        .date()
+      checkOut: date()
         .when('checkIn', (checkIn, schema) => {
           if (checkIn) {
             return schema.min(
@@ -42,7 +40,7 @@ export class BookingDatesSchema {
         abortEarly: false,
       });
     } catch (e) {
-      if (e instanceof yup.ValidationError) {
+      if (e instanceof ValidationError) {
         console.warn(e.message);
         return;
       }

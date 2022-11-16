@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 import { CabinDatabaseService } from 'src/cabinDatabase/cabinDatabase.service';
-import {
-  BookingDates,
-  BookingDatesSchema,
-} from 'src/slashCommand/commands/randomcabin.utils';
+import { BookingDates } from 'src/slashCommand/commands/randomcabin.utils';
 import { VisbookService } from 'src/visbook/visbook.service';
 import { hasExceededTimeLimit } from './cabin.utils';
-
 
 @Injectable()
 export class CabinService {
