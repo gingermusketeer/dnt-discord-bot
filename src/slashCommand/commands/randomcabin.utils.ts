@@ -41,7 +41,11 @@ export class BookingDatesSchema {
       });
     } catch (e) {
       if (e instanceof ValidationError || e instanceof TypeError) {
-        console.warn(e.message);
+        console.log(
+          `timestamp=${Date.now().toString()}`,
+          'origin="booking date validation"',
+          `message="${e.message}"`,
+        );
         return;
       }
       throw e;
