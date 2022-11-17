@@ -85,6 +85,12 @@ export class DiscordService implements OnModuleInit {
   async processMessage(msg: Message) {
     if (msg.author.bot) return;
 
+    const REPLY = 19;
+    if (msg.type === REPLY) {
+      const referencedMessage = await msg.fetchReference();
+      if (referencedMessage.author.id === this.botId) return;
+    }
+
     const isFromTestChannel = msg.channelId === this.testingChannelId;
     const isProduction = this.environment === 'production';
 
