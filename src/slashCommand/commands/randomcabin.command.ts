@@ -113,12 +113,26 @@ export default class RandomCabinCommand implements BaseCommand {
     return embed;
   }
 
+  private async buildBookingEmbed({
+    bookingUrl,
+    name,
+  }: CabinSummary): Promise<EmbedBuilder> {
+    const title = `:point_right: Book ${name} now!`;
+    const embed = new EmbedBuilder()
+      .setColor(0xd82d20)
+      .setTitle(title)
+      .setURL(bookingUrl);
+
+    return embed;
+  }
+
   private async editReplyWithCabin(
     interaction: ChatInputCommandInteraction<CacheType>,
     cabin: CabinSummary,
     bookingDates?: BookingDates,
   ): Promise<void> {
-    const messageEmbed = await this.buildCabinEmbed(cabin);
+    const cabinEmbed = await this.buildCabinEmbed(cabin);
+    const bookingEmbed = await this.buildBookingEmbed(cabin);
 
     const dateOptions: Intl.DateTimeFormatOptions = {
       weekday: 'long',
@@ -142,7 +156,7 @@ export default class RandomCabinCommand implements BaseCommand {
 
     await interaction.editReply({
       content: messageContent,
-      embeds: [messageEmbed],
+      embeds: [cabinEmbed, bookingEmbed],
     });
   }
 }
