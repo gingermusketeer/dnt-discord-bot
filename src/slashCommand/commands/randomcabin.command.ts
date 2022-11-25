@@ -80,7 +80,7 @@ export default class RandomCabinCommand implements BaseCommand {
       checkOut,
     );
 
-    if (bookingDates === undefined) {
+    if (!bookingDates) {
       await interaction.editReply(
         `Looks like there's something wrong with your dates.`,
       );
