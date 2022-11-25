@@ -1,4 +1,5 @@
 import { BookingDates } from 'src/slashCommand/commands/randomcabin.utils';
+import { formatAsYYYYMMDD } from './visbook.utils';
 import { AccommodationAvailability } from './visbook.interface';
 
 /*
@@ -10,11 +11,6 @@ export class VisbookApi {
     cabinVisbookId: number,
     bookingDates: BookingDates,
   ): Promise<AccommodationAvailability> {
-    const formatAsYYYYMMDD = (date: Date) => {
-      // Target format is yyyy-mm-dd
-      return date.toISOString().split('T')[0];
-    };
-
     const checkIn = formatAsYYYYMMDD(bookingDates.checkIn);
     const checkOut = formatAsYYYYMMDD(bookingDates.checkOut);
     const request = `/${cabinVisbookId}/webproducts/${checkIn}/${checkOut}`;
