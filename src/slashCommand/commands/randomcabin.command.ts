@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import {
   CacheType,
   ChatInputCommandInteraction,
-  EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
-import { convert } from 'html-to-text';
+import { BotService } from 'src/bot/bot.service';
 import { CabinService } from 'src/cabin/cabin.service';
 import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 import { BaseCommand } from '../slashCommand.interface';
@@ -19,7 +18,10 @@ export default class RandomCabinCommand implements BaseCommand {
     'addSubcommand' | 'addSubcommandGroup'
   >;
 
-  constructor(private readonly cabinService: CabinService) {
+  constructor(
+    private readonly cabinService: CabinService,
+    private readonly botService: BotService,
+  ) {
     this.name = 'randomcabin';
 
     this.slashCommandBuilder = new SlashCommandBuilder()
@@ -98,41 +100,13 @@ export default class RandomCabinCommand implements BaseCommand {
     }
   }
 
-  // TODO can we reuse the method from bot service or write one that can be used by both modules? Maybe in cabin service or cabin database service?
-  private async buildCabinEmbed(cabin: CabinSummary): Promise<EmbedBuilder> {
-    const text = convert(cabin.description);
-    const imageUrl = `https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/${cabin.media[0].uri}`;
-
-    const embed = new EmbedBuilder()
-      .setColor(0xd82d20)
-      .setTitle(cabin.name)
-      .setURL(`https://ut.no/hytte/${cabin.utId}`)
-      .setDescription(text.split('\n')[0] + '...')
-      .setImage(imageUrl);
-
-    return embed;
-  }
-
-  private async buildBookingEmbed({
-    bookingUrl,
-    name,
-  }: CabinSummary): Promise<EmbedBuilder> {
-    const title = `:point_right: Book ${name} now!`;
-    const embed = new EmbedBuilder()
-      .setColor(0xd82d20)
-      .setTitle(title)
-      .setURL(bookingUrl);
-
-    return embed;
-  }
-
   private async editReplyWithCabin(
     interaction: ChatInputCommandInteraction<CacheType>,
     cabin: CabinSummary,
     bookingDates?: BookingDates,
   ): Promise<void> {
-    const cabinEmbed = await this.buildCabinEmbed(cabin);
-    const bookingEmbed = await this.buildBookingEmbed(cabin);
+    const cabinEmbed = await this.botService.buildCabinEmbed(cabin);
+    const bookingEmbed = await this.botService.buildBookingEmbed(cabin);
 
     const dateOptions: Intl.DateTimeFormatOptions = {
       weekday: 'long',

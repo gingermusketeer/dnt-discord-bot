@@ -167,14 +167,18 @@ export class DiscordService implements OnModuleInit {
     await this.registerGuildCommands([]);
   }
 
-  async sendMessage(channelId: string, embed: EmbedBuilder) {
+  async sendMessage(
+    channelId: string,
+    messageContent: string,
+    embed: EmbedBuilder,
+  ) {
     const channel = await this.client.channels.fetch(channelId);
     if (!channel || !channel.isTextBased()) {
       console.log('channel not found');
       return false;
     }
 
-    await channel.send({ embeds: [embed] });
+    await channel.send({ content: messageContent, embeds: [embed] });
   }
 
   async getChannels() {
