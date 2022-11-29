@@ -4,9 +4,9 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
-import { BotService } from 'src/bot/bot.service';
 import { CabinService } from 'src/cabin/cabin.service';
 import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
+import { EmbedService } from 'src/embed/embed.service';
 import { BaseCommand } from '../slashCommand.interface';
 import { BookingDates, BookingDatesSchema } from './randomcabin.utils';
 
@@ -20,7 +20,7 @@ export default class RandomCabinCommand implements BaseCommand {
 
   constructor(
     private readonly cabinService: CabinService,
-    private readonly botService: BotService,
+    private readonly embedService: EmbedService,
   ) {
     this.name = 'randomcabin';
 
@@ -105,8 +105,8 @@ export default class RandomCabinCommand implements BaseCommand {
     cabin: CabinSummary,
     bookingDates?: BookingDates,
   ): Promise<void> {
-    const cabinEmbed = await this.botService.buildCabinEmbed(cabin);
-    const bookingEmbed = await this.botService.buildBookingEmbed(cabin);
+    const cabinEmbed = await this.embedService.buildCabinEmbed(cabin);
+    const bookingEmbed = await this.embedService.buildBookingEmbed(cabin);
 
     const dateOptions: Intl.DateTimeFormatOptions = {
       weekday: 'long',

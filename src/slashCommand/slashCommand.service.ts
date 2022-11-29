@@ -5,6 +5,7 @@ import {
 } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
 import { DiscordService } from 'src/discord/discord.service';
+import { EmbedService } from 'src/embed/embed.service';
 import PingCommand from './commands/ping.command';
 import PspspsCommand from './commands/pspsps.command';
 import RandomCabinCommand from './commands/randomcabin.command';
@@ -17,12 +18,13 @@ export class SlashCommandService implements OnModuleInit {
   constructor(
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
+    private readonly embedService: EmbedService,
     private readonly cabinService: CabinService,
   ) {
     this.slashCommands = [
       new PingCommand(),
       new PspspsCommand(),
-      new RandomCabinCommand(this.cabinService),
+      new RandomCabinCommand(this.cabinService, this.embedService),
     ];
   }
 
