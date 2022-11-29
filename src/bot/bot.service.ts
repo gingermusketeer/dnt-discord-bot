@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
 import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 import { ActivityData } from 'src/activity/activity.interface';
+import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
 
 @Injectable()
 export class BotService implements OnModuleInit {
@@ -49,7 +50,7 @@ export class BotService implements OnModuleInit {
       .setImage(imageUrl)
       .setTimestamp();
     this.discordService
-      .sendMessage(this.newActivityChannelId, embed)
+      .sendMessage(this.newActivityChannelId, '', embed)
       .catch((error) => {
         console.error('failed to send onNewEvent message', error);
       });
@@ -73,18 +74,39 @@ export class BotService implements OnModuleInit {
     const cabin = await this.cabinService.getRandomCabin();
     if (cabin === null) return;
 
+    const messageContent = 'Dagens hytte :house_with_garden:';
+    const embed = await this.buildCabinEmbed(cabin);
+    await this.discordService.sendMessage(channelId, messageContent, embed);
+  }
+
+  async buildCabinEmbed(cabin: CabinSummary): Promise<EmbedBuilder> {
     const text = convert(cabin.description);
     const imageUrl = `https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/${cabin.media[0].uri}`;
+
     const embed = new EmbedBuilder()
       .setColor(0xd82d20)
-      .setTitle(`Dagens Hytta - ${cabin.name}`)
-      .setURL(`https://ut.no/hytte/${cabin.id}`)
+      .setTitle(cabin.name)
+      .setURL(`https://ut.no/hytte/${cabin.utId}`)
       .setDescription(text.split('\n')[0] + '...')
       .setThumbnail(
         'https://cdn.dnt.org/prod/sherpa/build/permanent/static/img/common/header-logo-part.png',
       )
       .setImage(imageUrl)
       .setTimestamp();
-    await this.discordService.sendMessage(channelId, embed);
+
+    return embed;
+  }
+
+  async buildBookingEmbed({
+    bookingUrl,
+    name,
+  }: CabinSummary): Promise<EmbedBuilder> {
+    const title = `:point_right: Book ${name} now!`;
+    const embed = new EmbedBuilder()
+      .setColor(0xd82d20)
+      .setTitle(title)
+      .setURL(bookingUrl);
+
+    return embed;
   }
 }
