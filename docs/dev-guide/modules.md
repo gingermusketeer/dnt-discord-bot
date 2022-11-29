@@ -12,6 +12,7 @@ BotModule --> ActivityDatabaseModule
 BotModule --> ConfigModule
 BotModule --> DiscordModule
 BotModule --> CabinModule
+BotModule --> EmbedModule
 CabinModule --> ConfigModule
 CabinModule --> CabinDatabaseModule
 CabinModule --> VisbookModule
