@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   CacheType,
   ChatInputCommandInteraction,
+  EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
@@ -105,8 +106,11 @@ export default class RandomCabinCommand implements BaseCommand {
     cabin: CabinSummary,
     bookingDates?: BookingDates,
   ): Promise<void> {
-    const cabinEmbed = await this.embedService.buildCabinEmbed(cabin);
-    const bookingEmbed = await this.embedService.buildBookingEmbed(cabin);
+    const embeds: EmbedBuilder[] = [];
+    embeds.push(await this.embedService.buildCabinEmbed(cabin));
+    if (cabin.bookingUrl) {
+      embeds.push(await this.embedService.buildBookingEmbed(cabin));
+    }
 
     const dateOptions: Intl.DateTimeFormatOptions = {
       weekday: 'long',
@@ -130,7 +134,7 @@ export default class RandomCabinCommand implements BaseCommand {
 
     await interaction.editReply({
       content: messageContent,
-      embeds: [cabinEmbed, bookingEmbed],
+      embeds: embeds,
     });
   }
 }
