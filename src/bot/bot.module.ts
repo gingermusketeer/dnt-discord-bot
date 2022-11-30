@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ActivityDatabaseModule } from 'src/activityDatabase/activityDatabase.module';
 import { CabinModule } from 'src/cabin/cabin.module';
 import { DiscordModule } from 'src/discord/discord.module';
-import { SlashCommandModule } from 'src/slashCommand/slashCommand.module';
+import { EmbedModule } from 'src/embed/embed.module';
 import { BotService } from './bot.service';
 
 @Module({
@@ -12,7 +12,7 @@ import { BotService } from './bot.service';
     ConfigModule,
     DiscordModule,
     CabinModule,
-    SlashCommandModule,
+    EmbedModule,
   ],
   providers: [BotService],
 })

@@ -1,14 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscordService } from 'src/discord/discord.service';
 import * as cron from 'node-cron';
-import { convert } from 'html-to-text';
 import { EmbedBuilder } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
 import { ConfigService } from '@nestjs/config';
 import { ActivityDatabaseService } from 'src/activityDatabase/activityDatabase.service';
 import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 import { ActivityData } from 'src/activity/activity.interface';
-import { CabinSummary } from 'src/cabinDatabase/cabinDatabase.interface';
+import { EmbedService } from 'src/embed/embed.service';
 
 @Injectable()
 export class BotService implements OnModuleInit {
@@ -18,6 +17,7 @@ export class BotService implements OnModuleInit {
     private readonly discordService: DiscordService,
     private readonly cabinService: CabinService,
     private readonly activityDatabaseService: ActivityDatabaseService,
+    private readonly embedService: EmbedService,
   ) {
     this.newActivityChannelId = this.configService.getOrThrow(
       'DISCORD_NEW_ACTIVITY_CHANNEL_ID',
@@ -75,38 +75,7 @@ export class BotService implements OnModuleInit {
     if (cabin === null) return;
 
     const messageContent = 'Dagens hytte :house_with_garden:';
-    const embed = await this.buildCabinEmbed(cabin);
+    const embed = await this.embedService.buildCabinEmbed(cabin);
     await this.discordService.sendMessage(channelId, messageContent, embed);
-  }
-
-  async buildCabinEmbed(cabin: CabinSummary): Promise<EmbedBuilder> {
-    const text = convert(cabin.description);
-    const imageUrl = `https://res.cloudinary.com/ntb/image/upload/w_1280,q_80/v1/${cabin.media[0].uri}`;
-
-    const embed = new EmbedBuilder()
-      .setColor(0xd82d20)
-      .setTitle(cabin.name)
-      .setURL(`https://ut.no/hytte/${cabin.utId}`)
-      .setDescription(text.split('\n')[0] + '...')
-      .setThumbnail(
-        'https://cdn.dnt.org/prod/sherpa/build/permanent/static/img/common/header-logo-part.png',
-      )
-      .setImage(imageUrl)
-      .setTimestamp();
-
-    return embed;
-  }
-
-  async buildBookingEmbed({
-    bookingUrl,
-    name,
-  }: CabinSummary): Promise<EmbedBuilder> {
-    const title = `:point_right: Book ${name} now!`;
-    const embed = new EmbedBuilder()
-      .setColor(0xd82d20)
-      .setTitle(title)
-      .setURL(bookingUrl);
-
-    return embed;
   }
 }
