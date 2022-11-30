@@ -17,6 +17,6 @@ CabinUtModule --> VisbookModule
 DiscordModule --> SlashCommandModule
 EmbedModule
 SlashCommandModule --> CabinModule
-SlashCommandModule --> DiscordModule
+SlashCommandModule --> ChatCommandModule
 SlashCommandModule --> EmbedModule
 ```

@@ -1,10 +1,10 @@
-import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   Interaction,
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
-import { DiscordService } from 'src/discord/discord.service';
+import { ChatCommandService } from 'src/chatCommand/chatCommand.service';
 import { EmbedService } from 'src/embed/embed.service';
 import PingCommand from './commands/ping.command';
 import PspspsCommand from './commands/pspsps.command';
@@ -16,8 +16,7 @@ export class SlashCommandService implements OnModuleInit {
   private slashCommands: BaseCommand[];
 
   constructor(
-    @Inject(forwardRef(() => DiscordService))
-    private readonly discordService: DiscordService,
+    private readonly chatCommandService: ChatCommandService,
     private readonly embedService: EmbedService,
     private readonly cabinService: CabinService,
   ) {
@@ -30,7 +29,7 @@ export class SlashCommandService implements OnModuleInit {
 
   onModuleInit() {
     const slashCommandJson = this.generateSlashCommandJson();
-    this.discordService.onSlashCommandRefresh(slashCommandJson);
+    this.chatCommandService.onSlashCommandRefresh(slashCommandJson);
   }
 
   onInteractionCreate = (interaction: Interaction) => {
