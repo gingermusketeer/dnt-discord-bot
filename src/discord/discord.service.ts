@@ -7,9 +7,6 @@ import {
   GatewayIntentBits,
   Message,
   Partials,
-  REST,
-  RESTPostAPIApplicationCommandsJSONBody,
-  Routes,
   TextChannel,
 } from 'discord.js';
 import { SlashCommandService } from 'src/slashCommand/slashCommand.service';
@@ -17,7 +14,6 @@ import { SlashCommandService } from 'src/slashCommand/slashCommand.service';
 @Injectable()
 export class DiscordService implements OnModuleInit {
   private client: Client;
-  private rest: REST;
 
   private readonly botId = this.configService.getOrThrow('DISCORD_BOT_USER_ID');
   private readonly discordToken =
@@ -65,23 +61,6 @@ export class DiscordService implements OnModuleInit {
     });
   };
 
-  onSlashCommandRefresh(commands: RESTPostAPIApplicationCommandsJSONBody[]) {
-    this.rest = new REST({ version: '10' }).setToken(this.discordToken);
-
-    this.deleteGlobalCommands()
-      .catch((error) =>
-        console.error('Failed to delete global slash commands', error),
-      )
-      .then(() => this.deleteGuildCommands())
-      .catch((error) =>
-        console.error('Failed to delete guild slash commands', error),
-      )
-      .then(() => this.registerSlashCommands(commands))
-      .catch((error) =>
-        console.error('Failed to refresh slash commands', error),
-      );
-  }
-
   async processMessage(msg: Message) {
     if (msg.author.bot) return;
 
@@ -116,61 +95,6 @@ export class DiscordService implements OnModuleInit {
 
   async handleDm(msg: Message<boolean>) {
     await msg.author.send(`Good to hear from you, ${msg.author.username}.`);
-  }
-
-  private async registerSlashCommands(
-    commands: RESTPostAPIApplicationCommandsJSONBody[],
-  ) {
-    if (this.environment === 'production') {
-      await this.registerGlobalCommands(commands);
-    }
-
-    await this.registerGuildCommands(commands);
-  }
-
-  private async registerGlobalCommands(
-    commands: RESTPostAPIApplicationCommandsJSONBody[],
-  ) {
-    if (commands.length === 0) {
-      console.log('Deleting global application (/) commands...');
-    } else {
-      console.log(
-        `Registering ${commands.length} global application (/) commands...`,
-      );
-    }
-    await this.rest.put(Routes.applicationCommands(this.botId), {
-      body: commands,
-    });
-    console.log(`...done!`);
-  }
-
-  private async registerGuildCommands(
-    commands: RESTPostAPIApplicationCommandsJSONBody[],
-  ) {
-    if (commands.length === 0) {
-      console.log('Deleting guild application (/) commands...');
-    } else {
-      console.log(
-        `Registering ${commands.length} guild application (/) commands...`,
-      );
-    }
-
-    await this.rest.put(
-      Routes.applicationGuildCommands(this.botId, this.guildId),
-      {
-        body: commands,
-      },
-    );
-
-    console.log(`...done!`);
-  }
-
-  private async deleteGlobalCommands() {
-    await this.registerGlobalCommands([]);
-  }
-
-  private async deleteGuildCommands() {
-    await this.registerGuildCommands([]);
   }
 
   async sendMessage(
