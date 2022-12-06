@@ -1,0 +1,10 @@
+services:
+  dnt-discord-bot:
+    container_name: dnt-discord-bot
+    image: dnt-discord-bot:latest
+    command: npm run build
+    environment:
+      - NODE_ENV=production
+    env_file: ./dnt-discord-bot-env
+    entrypoint: ./dist/main
+    restart: unless-stopped

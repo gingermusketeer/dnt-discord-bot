@@ -10,7 +10,7 @@ set -ex
 
 deployDir="../deploy"
 buildConfig="--rm=true" #could be empty
-runConfig=""            #could be empty -p 49153:3000
+runConfig="--restart=unless-stopped"            #could be empty -p 49153:3000
 
 ## --- End Config
 
@@ -51,7 +51,7 @@ while read oldrev newrev refname; do
         fi
         set -e
         echo "Docker : run $containerName"
-        sudo docker run --env-file ../dnt-discord-bot-env --name $containerName -d $runConfig $imageName:latest
+        sudo docker compose up
 
         if [ $? -ne 0 ]; then
             echo "Docker : Run failed, aborting"
