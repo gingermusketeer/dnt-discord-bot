@@ -9,8 +9,8 @@ set -ex
 ## --- Config
 
 deployDir="../deploy"
-buildConfig="--rm=true" #could be empty
-runConfig="--restart=unless-stopped"            #could be empty -p 49153:3000
+buildConfig="--rm=true"              #could be empty
+runConfig="--restart=unless-stopped" #could be empty -p 49153:3000
 
 ## --- End Config
 
@@ -27,6 +27,7 @@ while read oldrev newrev refname; do
         #we're in a bare repo, so let's checkout this somewhere
         GIT_WORK_TREE=$deployDir git checkout -f main
         cd $deployDir
+        cp ../dnt-discord-bot-env .env
 
         echo "Docker : Building $imageName:$lastCommit"
         buildID=$(sudo docker build $buildConfig -t $imageName .) # This build and tag the image with "latest" tag
