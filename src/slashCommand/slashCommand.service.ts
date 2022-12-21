@@ -6,9 +6,11 @@ import {
 import { CabinService } from 'src/cabin/cabin.service';
 import { ChatCommandService } from 'src/chatCommand/chatCommand.service';
 import { EmbedService } from 'src/embed/embed.service';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 import PingCommand from './commands/ping.command';
 import PspspsCommand from './commands/pspsps.command';
 import RandomCabinCommand from './commands/randomcabin.command';
+import SubscribeCommand from './commands/subscribe.command';
 import { BaseCommand } from './slashCommand.interface';
 
 @Injectable()
@@ -19,11 +21,13 @@ export class SlashCommandService implements OnModuleInit {
     private readonly chatCommandService: ChatCommandService,
     private readonly embedService: EmbedService,
     private readonly cabinService: CabinService,
+    private readonly subscriptionService: SubscriptionService,
   ) {
     this.slashCommands = [
       new PingCommand(),
       new PspspsCommand(),
       new RandomCabinCommand(this.cabinService, this.embedService),
+      new SubscribeCommand(this.subscriptionService),
     ];
   }
 
