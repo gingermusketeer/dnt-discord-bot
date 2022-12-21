@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model activities {
+  id             String    @id @db.VarChar
+  url            String
+  audience       String[]
+  tripType       String[]
+  organiser      String[]
+  descriptionNb  String
+  descriptionEn  String
+  media          Json
+  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime  @db.Timestamptz(6)
+  type           String
+  startsAt       DateTime? @db.Timestamptz(6)
+  endsAt         DateTime? @db.Timestamptz(6)
+  difficulty     String?
+  tripArea       String[]
+  tripCode       String?
+  title          String?
+  signUpAt       DateTime? @db.Timestamptz(6)
+  requiresSignUp Boolean?
+  cancelled      Boolean?
+}
+
+model cabins {
+  id           BigInt   @default(autoincrement())
+  updatedAt    DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamptz(6)
+  utId         BigInt   @id
+  visbookId    BigInt?
+  bookingUrl   String?
+  description  String?
+  name         String
+  geometry     Json?    @db.Json
+  media        Json[]   @db.Json
+  openingHours Json[]   @db.Json
+}
+
+model subscription_topics {
+  id        BigInt    @id @default(autoincrement())
+  title     String?
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+}
+
+model subscriptions {
+  id             BigInt    @id @default(autoincrement())
+  subscriberId   BigInt?
+  subscriberType String?
+  topic          String?
+  createdAt      DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime? @db.Timestamptz(6)
+  notifiedAt     DateTime? @db.Timestamptz(6)
+}

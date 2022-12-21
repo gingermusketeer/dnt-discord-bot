@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BotModule } from './bot/bot.module';
 import { CabinModule } from './cabin/cabin.module';
+import { DbModule } from './db/db.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CabinModule } from './cabin/cabin.module';
     ActivityModule,
     ConfigModule.forRoot(),
     CabinModule,
+    DbModule,
   ],
   controllers: [AppController],
   providers: [AppService],
