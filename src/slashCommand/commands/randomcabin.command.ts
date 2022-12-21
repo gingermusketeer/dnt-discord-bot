@@ -3,6 +3,7 @@ import {
   CacheType,
   ChatInputCommandInteraction,
   EmbedBuilder,
+  RESTPostAPIApplicationCommandsJSONBody,
   SlashCommandBuilder,
 } from 'discord.js';
 import { CabinService } from 'src/cabin/cabin.service';
@@ -14,10 +15,7 @@ import { BookingDates, BookingDatesSchema } from './randomcabin.utils';
 @Injectable()
 export default class RandomCabinCommand implements BaseCommand {
   public readonly name: string;
-  public readonly slashCommandBuilder: Omit<
-    SlashCommandBuilder,
-    'addSubcommand' | 'addSubcommandGroup'
-  >;
+  public readonly slashCommandBuilder: RESTPostAPIApplicationCommandsJSONBody;
 
   constructor(
     private readonly cabinService: CabinService,
@@ -42,7 +40,8 @@ export default class RandomCabinCommand implements BaseCommand {
           .setName('check-out')
           .setDescription('When do you want to leave (yyyy-mm-dd)?')
           .setRequired(false),
-      );
+      )
+      .toJSON();
   }
 
   public async handleCommand(

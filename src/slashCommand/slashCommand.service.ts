@@ -51,7 +51,7 @@ export class SlashCommandService implements OnModuleInit {
   generateSlashCommandJson(): RESTPostAPIApplicationCommandsJSONBody[] {
     const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
     for (const command of this.slashCommands) {
-      slashCommands.push(command.slashCommandBuilder.toJSON());
+      slashCommands.push(command.slashCommandBuilder);
     }
     return slashCommands;
   }
