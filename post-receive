@@ -3,55 +3,25 @@
 # A git post-receive hook
 #
 # On main branch only :
-# 1. It builds a docker image named with the dir name
-# 2. It then stop container of the same name, rm it and start a new one
+# 1. Build and run the containers in the docker compose file
 set -ex
 ## --- Config
 
 deployDir="../deploy"
-buildConfig="--rm=true" #could be empty
-runConfig=""            #could be empty -p 49153:3000
 
 ## --- End Config
 
 while read oldrev newrev refname; do
     branch=$(git rev-parse --symbolic --abbrev-ref $refname)
     if [ "main" == "$branch" ]; then
-
-        imageName="dnt-discord-bot" #docker img name
-        containerName="$imageName"  #docker container name
-
-        lastCommit=$(git log --pretty=format:'%h' -n 1) #get last commit for img tag
-
         echo "Hook : deploy to dir $deployDir"
         #we're in a bare repo, so let's checkout this somewhere
         GIT_WORK_TREE=$deployDir git checkout -f main
         cd $deployDir
+        cp ../dnt-discord-bot-env .env
 
-        echo "Docker : Building $imageName:$lastCommit"
-        buildID=$(sudo docker build $buildConfig -t $imageName .) # This build and tag the image with "latest" tag
-        sudo docker tag $imageName:latest $imageName:$lastCommit  # Add the commit tag
-
-        if [ $? -ne 0 ]; then
-            echo "Docker : Build failed, aborting"
-            exit 1
-        fi
-
-        set +e
-        r=$(sudo docker container ls --all | grep $containerName)
-        if [ $? -eq 0 ]; then
-            set -e
-            echo "Docker : stop and rm $containerName"
-            sudo docker stop $containerName
-            sudo docker rm $containerName
-            if [ $? -ne 0 ]; then
-                echo "Docker : Stop failed, aborting"
-                exit 1
-            fi
-        fi
-        set -e
-        echo "Docker : run $containerName"
-        sudo docker run --env-file ../dnt-discord-bot-env --name $containerName -d $runConfig $imageName:latest
+        echo "Docker : building and running apps"
+        sudo docker compose up --build --detach
 
         if [ $? -ne 0 ]; then
             echo "Docker : Run failed, aborting"

@@ -1,0 +1,6 @@
+services:
+  dnt-discord-bot:
+    platform: linux/amd64
+    build: ./
+    env_file: ./.env
+    restart: unless-stopped
