@@ -1,10 +1,13 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-
+import {
+  ChatInputCommandInteraction,
+  RESTPostAPIApplicationCommandsJSONBody,
+  SlashCommandBuilder,
+  SlashCommandSubcommandBuilder,
+  SlashCommandSubcommandGroupBuilder,
+} from 'discord.js';
 export interface BaseCommand {
   name: string;
-  slashCommandBuilder:
-    | SlashCommandBuilder
-    | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
+  slashCommandBuilder: RESTPostAPIApplicationCommandsJSONBody;
 
   handleCommand(arg: ChatInputCommandInteraction): Promise<void>;
 }
