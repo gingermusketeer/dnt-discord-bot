@@ -20,6 +20,9 @@ while read oldrev newrev refname; do
         cd $deployDir
         cp ../dnt-discord-bot-env .env
 
+        echo "Docker : prune system"
+        sudo docker system prune --all --force
+
         echo "Docker : building and running apps"
         sudo docker compose up --build --detach
 
