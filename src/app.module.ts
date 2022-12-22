@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { BotModule } from './bot/bot.module';
 import { CabinModule } from './cabin/cabin.module';
 import { DbModule } from './db/db.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DbModule } from './db/db.module';
     ConfigModule.forRoot(),
     CabinModule,
     DbModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

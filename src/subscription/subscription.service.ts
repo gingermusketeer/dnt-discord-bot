@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { Subscriber, Subscription } from 'prisma/prisma.types';
 import { DbService } from 'src/db/db.service';
 
 @Injectable()
@@ -24,12 +25,36 @@ export class SubscriptionService {
     return true;
   }
 
-  public async getActivities(tripType: string, after: Date) {
+  // TODO move to activity module?
+  public async getNewActivities(tripType: string, after: Date) {
     return this.dbService.prisma.activities.findMany({
       where: {
-        tripType: { has: tripType },
+        tripType: { has: tripType }, // TODO make this case INsensitive! https://www.prisma.io/docs/concepts/components/prisma-client/case-sensitivity
         createdAt: { gt: after },
       },
+    });
+  }
+
+  // TODO move to cabins module?
+  public async getNewCabins(after: Date) {
+    return this.dbService.prisma.cabins.findMany({
+      where: {
+        createdAt: { gt: after },
+      },
+    });
+  }
+
+  public async getSubscribers(): Promise<Subscriber[] | undefined> {
+    return this.dbService.prisma.subscriptions.groupBy({
+      by: ['subscriberType', 'subscriberId'],
+    });
+  }
+
+  public async getSubscriptions(
+    subscriberId: string,
+  ): Promise<Subscription[] | undefined> {
+    return this.dbService.prisma.subscriptions.findMany({
+      where: { subscriberId: subscriberId },
     });
   }
 }
