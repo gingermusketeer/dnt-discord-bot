@@ -15,6 +15,8 @@ CabinModule --> VisbookModule
 CabinDatabaseModule --> CabinUtModule
 CabinUtModule --> VisbookModule
 DiscordModule --> SlashCommandModule
+NotificationModule --> DiscordModule
+NotificationModule --> SubscriptionModule
 SlashCommandModule --> CabinModule
 SlashCommandModule --> ChatCommandModule
 SlashCommandModule --> EmbedModule
