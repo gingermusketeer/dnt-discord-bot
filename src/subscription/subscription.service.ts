@@ -1,12 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { DbService } from 'src/db/db.service';
-
-interface Subscription {
-  subscriberId: string;
-  subscriberType: string;
-  type: string;
-  topic: string | null;
-}
 
 @Injectable()
 export class SubscriptionService {
@@ -14,7 +8,7 @@ export class SubscriptionService {
 
   constructor(private readonly dbService: DbService) {}
 
-  public async add(subscription: Subscription) {
+  public async add(subscription: Prisma.subscriptionsCreateInput) {
     try {
       await this.dbService.prisma.subscriptions.create({
         data: subscription,
