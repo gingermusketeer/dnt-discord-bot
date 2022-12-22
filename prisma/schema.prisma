@@ -52,10 +52,11 @@ model subscription_topics {
 
 model subscriptions {
   id             BigInt    @id @default(autoincrement())
-  subscriberId   BigInt?
-  subscriberType String?
+  subscriberId   String
+  subscriberType String
   topic          String?
   createdAt      DateTime? @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime? @db.Timestamptz(6)
+  updatedAt      DateTime? @default(now()) @db.Timestamptz(6)
   notifiedAt     DateTime? @db.Timestamptz(6)
+  type           String
 }
