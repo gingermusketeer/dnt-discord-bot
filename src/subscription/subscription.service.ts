@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { Subscriber, Subscription } from 'prisma/prisma.types';
+import { Subscriber } from 'prisma/prisma.types';
 import { DbService } from 'src/db/db.service';
 
 @Injectable()
@@ -50,9 +50,7 @@ export class SubscriptionService {
     });
   }
 
-  public async getSubscriptions(
-    subscriberId: string,
-  ): Promise<Subscription[] | undefined> {
+  public async getSubscriptions(subscriberId: string) {
     return this.dbService.prisma.subscriptions.findMany({
       where: { subscriberId: subscriberId },
     });

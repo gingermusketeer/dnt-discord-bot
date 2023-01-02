@@ -3,7 +3,13 @@ import * as cron from 'node-cron';
 import { ConfigService } from '@nestjs/config';
 import { DiscordService } from 'src/discord/discord.service';
 import { SubscriptionService } from 'src/subscription/subscription.service';
-import { Subscriber, Subscription } from 'prisma/prisma.types';
+import { Subscriber } from 'prisma/prisma.types';
+import { activities, cabins, subscriptions } from '@prisma/client';
+
+type NewActivities = {
+  topic: string;
+  activities: activities[];
+};
 
 @Injectable()
 export class NotificationService {
@@ -47,7 +53,7 @@ export class NotificationService {
         return;
       }
 
-      const [newActivities, newCabins] = await this.findNewsForSubscriptions(
+      const { newActivities, newCabins } = await this.findNewsForSubscriptions(
         subscriptions,
       );
       if (newActivities === null && newCabins === null) {
@@ -60,12 +66,12 @@ export class NotificationService {
         newActivities,
         newCabins,
       );
-      this.sendNotification(subscriber, messageContent);
+      await this.sendNotification(subscriber, messageContent);
       // TODO set notifiedAt for all subscriptions of this subscriber
     });
   }
 
-  private async findNewsForSubscriptions(subscriptions: Subscription[]) {
+  private async findNewsForSubscriptions(subscriptions: subscriptions[]) {
     const cabinSubscriptions = subscriptions.filter((s) => s.type === 'cabins');
     const activitySubscriptions = subscriptions.filter(
       (s) => s.type === 'activities',
@@ -75,14 +81,14 @@ export class NotificationService {
     const newActivities = await this.getNewActivities(activitySubscriptions);
 
     if (newActivities.length === 0 && newCabins.length === 0) {
-      return [null, null];
+      return { newActivities: null, newCabins: null };
     }
 
-    return [newActivities, newCabins];
+    return { newActivities: newActivities, newCabins: newCabins };
   }
 
-  private async getNewCabins(subscriptions: Subscription[]) {
-    const news: any[] = [];
+  private async getNewCabins(subscriptions: subscriptions[]) {
+    const news: cabins[] = [];
 
     for (const subscription of subscriptions) {
       const cabins = await this.subscriptionService.getNewCabins(
@@ -93,15 +99,17 @@ export class NotificationService {
     return news;
   }
 
-  private async getNewActivities(subscriptions: Subscription[]) {
-    const news: any[] = [];
+  private async getNewActivities(
+    subscriptions: subscriptions[],
+  ): Promise<NewActivities[]> {
+    const news: NewActivities[] = [];
     for (const subscription of subscriptions) {
       if (subscription.topic !== null) {
         const activities = await this.subscriptionService.getNewActivities(
           subscription.topic,
           subscription.notifiedAt,
         );
-        news.push(...activities);
+        news.push({ topic: subscription.topic, activities: [...activities] });
       }
     }
     return news;
@@ -110,8 +118,8 @@ export class NotificationService {
   private createNotificationMessage(
     subscriber: Subscriber,
     subscriptionCount: number,
-    newActivities: any[] | null,
-    newCabins: any[] | null,
+    newActivities: NewActivities[] | null,
+    newCabins: cabins[] | null,
   ) {
     const messageContent = [];
 
@@ -127,10 +135,12 @@ export class NotificationService {
     }
 
     if (newActivities !== null && newActivities.length > 0) {
+      newActivities.forEach((activitiesByTopic) => {
       messageContent.push(
-        `Have a look at ${newActivities.length} new activities:\n`,
+          `${activitiesByTopic.activities.length} new activities that mention "${activitiesByTopic.topic}":\n`,
       );
       // TODO list new activities
+      });
     }
 
     if (newCabins !== null && newCabins.length > 0) {
