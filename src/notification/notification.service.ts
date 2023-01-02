@@ -125,12 +125,12 @@ export class NotificationService {
 
     if (subscriber.subscriberType === 'user') {
       messageContent.push(
-        `Hei! Here is your daily digest of ${subscriptionCount} active subscriptions. :heart_eyes_cat:\n`,
+        `Hei! :heart_eyes_cat: Here is your daily digest of ${subscriptionCount} active subscriptions.\n`,
       );
     }
     if (subscriber.subscriberType === 'channel') {
       messageContent.push(
-        "Hei @everyone! :heart_eyes_cat: Here is what's new since yesterday.\n",
+        "Hei, I found some new activities related to this channel's subscriptions! :heart_eyes_cat:\n",
       );
     }
 
@@ -156,9 +156,7 @@ export class NotificationService {
     messageContent: string,
   ) {
     if (subscriber.subscriberType === 'user') {
-      // TODO notify user via DM
-      // implement method in discord service to obtain user: https://stackoverflow.com/a/58439049
-      // implement method in discord service to send DM to user
+      await this.discordService.sendDm(subscriber.subscriberId, messageContent);
     }
 
     if (subscriber.subscriberType === 'channel') {

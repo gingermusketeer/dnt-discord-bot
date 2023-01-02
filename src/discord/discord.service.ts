@@ -121,6 +121,10 @@ export class DiscordService implements OnModuleInit {
     await channel.send({ content: messageContent });
   }
 
+  async sendDm(userId: string, messageContent: string) {
+    await this.client.users.send(userId, messageContent);
+  }
+
   async getChannels() {
     const guild = await this.client.guilds.fetch(this.guildId);
     const channels = await guild.channels.fetch();
