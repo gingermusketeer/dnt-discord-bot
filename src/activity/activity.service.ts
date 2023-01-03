@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import Ajv from 'ajv/dist/jtd';
 import { ActivityData, ActivityDataSchema } from './activity.interface';
 import { Logger } from '@nestjs/common';
+import { DbService } from 'src/db/db.service';
 
 @Injectable()
 export class ActivityService implements OnModuleInit {
@@ -17,6 +18,7 @@ export class ActivityService implements OnModuleInit {
   constructor(
     private readonly configService: ConfigService,
     private readonly activityDatabaseService: ActivityDatabaseService,
+    private readonly dbService: DbService,
   ) {}
   async onModuleInit() {
     if (this.configService.get('NODE_ENV') === 'production') {
@@ -126,5 +128,16 @@ export class ActivityService implements OnModuleInit {
     this.logger.log(url);
     const response = await fetch(url);
     return await response.text();
+  }
+
+  public async getNewActivities(tripType: string, after: Date) {
+    return this.dbService.prisma.activities.findMany({
+      where: {
+        tripType: { has: tripType },
+        // TODO make this case INsensitive! https://www.prisma.io/docs/concepts/components/prisma-client/case-sensitivity
+        // mode: "insensitive" does not work for filtering of scalar lists: https://github.com/prisma/prisma/issues/8387
+        createdAt: { gt: after },
+      },
+    });
   }
 }

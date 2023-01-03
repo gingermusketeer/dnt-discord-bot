@@ -5,6 +5,8 @@ import { DiscordService } from 'src/discord/discord.service';
 import { SubscriptionService } from 'src/subscription/subscription.service';
 import { Subscriber } from 'prisma/prisma.types';
 import { activities, cabins, subscriptions } from '@prisma/client';
+import { ActivityService } from 'src/activity/activity.service';
+import { CabinService } from 'src/cabin/cabin.service';
 
 type NewActivities = {
   topic: string;
@@ -17,6 +19,8 @@ export class NotificationService {
   private task: cron.ScheduledTask;
 
   constructor(
+    private readonly activityService: ActivityService,
+    private readonly cabinService: CabinService,
     private readonly configService: ConfigService,
     private readonly discordService: DiscordService,
     private readonly subscriptionService: SubscriptionService,
@@ -91,7 +95,7 @@ export class NotificationService {
     const news: cabins[] = [];
 
     for (const subscription of subscriptions) {
-      const cabins = await this.subscriptionService.getNewCabins(
+      const cabins = await this.cabinService.getNewCabins(
         subscription.notifiedAt,
       );
       news.push(...cabins);
@@ -105,7 +109,7 @@ export class NotificationService {
     const news: NewActivities[] = [];
     for (const subscription of subscriptions) {
       if (subscription.topic !== null) {
-        const activities = await this.subscriptionService.getNewActivities(
+        const activities = await this.activityService.getNewActivities(
           subscription.topic,
           subscription.notifiedAt,
         );
