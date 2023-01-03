@@ -129,26 +129,31 @@ export class NotificationService {
 
     if (subscriber.subscriberType === 'user') {
       messageContent.push(
-        `Hei! :heart_eyes_cat: Here is your daily digest of ${subscriptionCount} active subscriptions.\n`,
+        `Hei! Here is your daily digest of ${subscriptionCount} active subscriptions. :smiley_cat:\n`,
       );
     }
     if (subscriber.subscriberType === 'channel') {
       messageContent.push(
-        "Hei, I found some new activities related to this channel's subscriptions! :heart_eyes_cat:\n",
+        "Hei, I found some new activities related to this channel's subscriptions! :smiley_cat:\n",
       );
     }
 
     if (newActivities !== null && newActivities.length > 0) {
       newActivities.forEach((activitiesByTopic) => {
+        if (activitiesByTopic.activities.length === 0) {
+          return;
+        }
       messageContent.push(
-          `${activitiesByTopic.activities.length} new activities that mention "${activitiesByTopic.topic}":\n`,
+          `:point_right: ${activitiesByTopic.activities.length} new activities that mention "${activitiesByTopic.topic}":\n`,
       );
       // TODO list new activities
       });
     }
 
     if (newCabins !== null && newCabins.length > 0) {
-      messageContent.push(`Check out ${newCabins.length} new cabins:\n`);
+      messageContent.push(
+        `:house_with_garden: ${newCabins.length} new cabins:\n`,
+      );
       // TODO list new cabins
     }
 
