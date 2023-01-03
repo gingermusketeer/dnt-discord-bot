@@ -7,10 +7,12 @@ import { Subscriber } from 'prisma/prisma.types';
 import { activities, cabins, subscriptions } from '@prisma/client';
 import { ActivityService } from 'src/activity/activity.service';
 import { CabinService } from 'src/cabin/cabin.service';
+import { EmbedBuilder } from 'discord.js';
 
-type NewActivities = {
-  topic: string;
-  activities: activities[];
+type MessageThread = {
+  topic: string | null;
+  mainMessage: string;
+  embeds: EmbedBuilder[];
 };
 
 @Injectable()
@@ -53,126 +55,200 @@ export class NotificationService {
       const subscriptions = await this.subscriptionService.getSubscriptions(
         subscriber.subscriberId,
       );
-      if (subscriptions === undefined || subscriptions.length === 0) {
+      if (subscriptions.length === 0) {
         return;
       }
 
-      const { newActivities, newCabins } = await this.findNewsForSubscriptions(
+      const subscriptionsWithNews = await this.findNewsForSubscriptions(
         subscriptions,
       );
-      if (newActivities === null && newCabins === null) {
+      if (subscriptionsWithNews.length === 0) {
         return;
       }
 
-      const messageContent = this.createNotificationMessage(
-        subscriber,
-        subscriptions.length,
-        newActivities,
-        newCabins,
-      );
-      await this.sendNotification(subscriber, messageContent);
+      const messages = this.createNotificationMessages(subscriptionsWithNews);
+      if (subscriber.subscriberType === 'channel') {
+        await this.sendNotificationsInThreads(subscriber, messages);
+      }
+      if (subscriber.subscriberType === 'user') {
+        await this.sendNotificationsAsDm(subscriber, messages);
+      }
       // TODO set notifiedAt for all subscriptions of this subscriber
     });
   }
 
   private async findNewsForSubscriptions(subscriptions: subscriptions[]) {
-    const cabinSubscriptions = subscriptions.filter((s) => s.type === 'cabins');
-    const activitySubscriptions = subscriptions.filter(
-      (s) => s.type === 'activities',
-    );
-
-    const newCabins = await this.getNewCabins(cabinSubscriptions);
-    const newActivities = await this.getNewActivities(activitySubscriptions);
-
-    if (newActivities.length === 0 && newCabins.length === 0) {
-      return { newActivities: null, newCabins: null };
-    }
-
-    return { newActivities: newActivities, newCabins: newCabins };
-  }
-
-  private async getNewCabins(subscriptions: subscriptions[]) {
-    const news: cabins[] = [];
+    const subscriptionsWithNews = [];
 
     for (const subscription of subscriptions) {
-      const cabins = await this.cabinService.getNewCabins(
-        subscription.notifiedAt,
-      );
-      news.push(...cabins);
+      if (subscription.type === 'cabins') {
+        const news = await this.getNewCabins(subscription);
+        if (news.length > 0) {
+          subscriptionsWithNews.push({
+            subscription: subscription,
+            news: news,
+          });
+        }
+      }
+
+      if (subscription.type === 'activities') {
+        const news = await this.getNewActivities(subscription);
+        if (news.length > 0) {
+          subscriptionsWithNews.push({
+            subscription: subscription,
+            news: news,
+          });
+        }
+      }
     }
-    return news;
+
+    return subscriptionsWithNews;
+  }
+
+  private async getNewCabins(subscription: subscriptions) {
+    return this.cabinService.getNewCabins(subscription.notifiedAt);
   }
 
   private async getNewActivities(
-    subscriptions: subscriptions[],
-  ): Promise<NewActivities[]> {
-    const news: NewActivities[] = [];
-    for (const subscription of subscriptions) {
-      if (subscription.topic !== null) {
-        const activities = await this.activityService.getNewActivities(
-          subscription.topic,
-          subscription.notifiedAt,
-        );
-        news.push({ topic: subscription.topic, activities: [...activities] });
-      }
+    subscription: subscriptions,
+  ): Promise<activities[]> {
+    if (subscription.topic !== null) {
+      return await this.activityService.getNewActivities(
+        subscription.topic,
+        subscription.notifiedAt,
+      );
     }
-    return news;
+    return [];
   }
 
-  private createNotificationMessage(
-    subscriber: Subscriber,
-    subscriptionCount: number,
-    newActivities: NewActivities[] | null,
-    newCabins: cabins[] | null,
-  ) {
-    const messageContent = [];
+  private createNotificationMessages(
+    subscriptionsWithNews: {
+      subscription: subscriptions;
+      news: cabins[] | activities[];
+    }[],
+  ): MessageThread[] {
+    const subscriberType = subscriptionsWithNews[0].subscription.subscriberType;
+    const today = new Date();
+    const todayString = `${today.getDate()}.${
+      today.getMonth() + 1
+    }.${today.getFullYear()}`;
+    const messages = subscriptionsWithNews.map((sub) => {
+      if (sub.subscription.type === 'activities') {
+        const topic = `${sub.subscription.topic} (${todayString})`;
+        const mainMessage = `:point_right: ${sub.news.length} new activities that mention "${sub.subscription.topic}".\n`;
+        const embeds = sub.news.map((activity) => {
+          // return new EmbedBuilder()
+          //   .setTitle(activity.title)
+          //   .setURL(activity.url);
+          return new EmbedBuilder().setTitle('activity').setURL('http://ut.no');
+        });
+        return { topic: topic, mainMessage: mainMessage, embeds: embeds };
+      }
+      if (sub.subscription.type === 'cabins') {
+        const mainMessage = `:house_with_garden: ${sub.news.length} new cabins:`;
+        const embeds = sub.news.map((cabin) => {
+          // return new EmbedBuilder()
+          //   .setTitle(cabin.name)
+          //   .setURL(`http://ut.no/hytte/${cabin.utId}`);
+          return new EmbedBuilder().setTitle('cabin').setURL('http://ut.no');
+        });
+        return {
+          topic: `New cabins (${todayString})`,
+          mainMessage: mainMessage,
+          embeds: embeds,
+        };
+      }
+      return { topic: '', mainMessage: '', embeds: [] };
+    });
 
-    if (subscriber.subscriberType === 'user') {
-      messageContent.push(
-        `Hei! Here is your daily digest of ${subscriptionCount} active subscriptions. :smiley_cat:\n`,
-      );
+    if (subscriberType === 'user') {
+      messages.unshift({
+        topic: '',
+        mainMessage: `Hei! Here is your daily digest of ${subscriptionsWithNews.length} active subscriptions. :smiley_cat:\n`,
+        embeds: [],
+      });
     }
-    if (subscriber.subscriberType === 'channel') {
-      messageContent.push(
-        "Hei, I found some new activities related to this channel's subscriptions! :smiley_cat:\n",
-      );
-    }
-
-    if (newActivities !== null && newActivities.length > 0) {
-      newActivities.forEach((activitiesByTopic) => {
-        if (activitiesByTopic.activities.length === 0) {
-          return;
-        }
-      messageContent.push(
-          `:point_right: ${activitiesByTopic.activities.length} new activities that mention "${activitiesByTopic.topic}":\n`,
-      );
-      // TODO list new activities
+    if (subscriberType === 'channel') {
+      messages.unshift({
+        topic: '',
+        mainMessage: `Hei, I found some new activities related to this channel's subscriptions! :smiley_cat:\n`,
+        embeds: [],
       });
     }
 
-    if (newCabins !== null && newCabins.length > 0) {
-      messageContent.push(
-        `:house_with_garden: ${newCabins.length} new cabins:\n`,
-      );
-      // TODO list new cabins
-    }
-
-    return messageContent.join('');
+    return messages;
   }
 
-  private async sendNotification(
+  private async sendNotificationsAsDm(
     subscriber: Subscriber,
-    messageContent: string,
+    messages: MessageThread[],
   ) {
-    if (subscriber.subscriberType === 'user') {
-      await this.discordService.sendDm(subscriber.subscriberId, messageContent);
-    }
-
-    if (subscriber.subscriberType === 'channel') {
-      await this.discordService.sendMessageWithoutEmbed(
+    for (const message of messages) {
+      await this.discordService.sendDm(
         subscriber.subscriberId,
-        messageContent,
+        message.mainMessage,
       );
+
+      for (const embed of message.embeds) {
+        await this.discordService.sendDmWithEmbeds(
+          subscriber.subscriberId,
+          '',
+          [embed],
+        );
+      }
+
+      // TODO TODO fix this to send embeds as chunks; chunks are created successfully, but only one embed appears
+      // multiple embeds only possible with webhooks? https://www.reddit.com/r/discordapp/comments/brqw71/how_can_i_add_multiple_embeds_in_a_message/
+      // const maxEmbedsPerMessage = 5;
+      // for (let i = 0; i < message.embeds.length; i += maxEmbedsPerMessage) {
+      //   const chunk = message.embeds.slice(i, i + maxEmbedsPerMessage);
+      //   await this.discordService.sendDmWithEmbeds(
+      //     subscriber.subscriberId,
+      //     '',
+      //     chunk,
+      //   );
+      // }
+    }
+  }
+
+  private async sendNotificationsInThreads(
+    subscriber: Subscriber,
+    messages: MessageThread[],
+  ) {
+    for (const notificationMessage of messages) {
+      const message = await this.discordService.sendMessageWithoutEmbed(
+        subscriber.subscriberId,
+        notificationMessage.mainMessage,
+      );
+
+      if (message && notificationMessage.embeds.length > 0) {
+        const threadName = notificationMessage.topic
+          ? notificationMessage.topic
+          : 'New cabins';
+        const thread = await this.discordService.createThreadFromMessage(
+          message,
+          threadName,
+        );
+
+        for (const embed of notificationMessage.embeds) {
+          await thread.send({ embeds: [embed] });
+        }
+
+        // TODO fix this to send embeds as chunks; chunks are created successfully, but only one embed appears in the thread message
+        // multiple embeds only possible with webhooks? https://www.reddit.com/r/discordapp/comments/brqw71/how_can_i_add_multiple_embeds_in_a_message/
+        // const maxEmbedsPerMessage = 10;
+        // for (
+        //   let i = 0;
+        //   i < notificationMessage.embeds.length;
+        //   i += maxEmbedsPerMessage
+        // ) {
+        //   const chunk = notificationMessage.embeds.slice(
+        //     i,
+        //     i + maxEmbedsPerMessage,
+        //   );
+        //   await thread.send({ embeds: chunk });
+        // }
+      }
     }
   }
 }

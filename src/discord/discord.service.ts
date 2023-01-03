@@ -118,7 +118,18 @@ export class DiscordService implements OnModuleInit {
       return false;
     }
 
-    await channel.send({ content: messageContent });
+    return await channel.send({ content: messageContent });
+  }
+
+  async sendDmWithEmbeds(
+    userId: string,
+    messageContent: string,
+    embeds: EmbedBuilder[],
+  ) {
+    await this.client.users.send(userId, {
+      content: messageContent,
+      embeds: embeds,
+    });
   }
 
   async sendDm(userId: string, messageContent: string) {
@@ -133,5 +144,12 @@ export class DiscordService implements OnModuleInit {
         return { name: channel?.name, id };
       }),
     );
+  }
+
+  async createThreadFromMessage(message: Message, name: string) {
+    return await message.startThread({
+      name: name,
+      autoArchiveDuration: 60,
+    });
   }
 }
