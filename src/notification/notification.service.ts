@@ -35,14 +35,14 @@ export class NotificationService {
 
   on4pm = () => {
     this.logger.log('on4pm');
-    this.findSubscribersAndSubscriptions()
+    this.notifySubscribers()
       .catch((error) => {
         this.logger.error('Sending notifications failed with error.', error);
       })
       .then(() => this.logger.log('Notifications sent successfully.'));
   };
 
-  private async findSubscribersAndSubscriptions() {
+  private async notifySubscribers() {
     const subscribers = await this.subscriptionService.getSubscribers();
 
     subscribers?.forEach(async (subscriber) => {
