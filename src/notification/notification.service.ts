@@ -33,12 +33,6 @@ export class NotificationService {
     }
   }
 
-  //// DO NOT COMMIT >>>>
-  onModuleInit() {
-    this.findSubscribersAndSubscriptions();
-  }
-  //// <<<< DO NOT COMMIT ABOVE
-
   on4pm = () => {
     this.logger.log('on4pm');
     this.findSubscribersAndSubscriptions()
