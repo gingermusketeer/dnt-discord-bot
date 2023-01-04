@@ -204,18 +204,6 @@ export class NotificationService {
           [embed],
         );
       }
-
-      // TODO TODO fix this to send embeds as chunks; chunks are created successfully, but only one embed appears
-      // multiple embeds only possible with webhooks? https://www.reddit.com/r/discordapp/comments/brqw71/how_can_i_add_multiple_embeds_in_a_message/
-      // const maxEmbedsPerMessage = 5;
-      // for (let i = 0; i < message.embeds.length; i += maxEmbedsPerMessage) {
-      //   const chunk = message.embeds.slice(i, i + maxEmbedsPerMessage);
-      //   await this.discordService.sendDmWithEmbeds(
-      //     subscriber.subscriberId,
-      //     '',
-      //     chunk,
-      //   );
-      // }
     }
   }
 
@@ -241,21 +229,6 @@ export class NotificationService {
         for (const embed of notificationMessage.embeds) {
           await thread.send({ embeds: [embed] });
         }
-
-        // TODO fix this to send embeds as chunks; chunks are created successfully, but only one embed appears in the thread message
-        // multiple embeds only possible with webhooks? https://www.reddit.com/r/discordapp/comments/brqw71/how_can_i_add_multiple_embeds_in_a_message/
-        // const maxEmbedsPerMessage = 10;
-        // for (
-        //   let i = 0;
-        //   i < notificationMessage.embeds.length;
-        //   i += maxEmbedsPerMessage
-        // ) {
-        //   const chunk = notificationMessage.embeds.slice(
-        //     i,
-        //     i + maxEmbedsPerMessage,
-        //   );
-        //   await thread.send({ embeds: chunk });
-        // }
       }
     }
   }
