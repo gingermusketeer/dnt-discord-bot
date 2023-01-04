@@ -132,10 +132,8 @@ export class ActivityService implements OnModuleInit {
   }
 
   public async getNewActivities(tripType: string, after: Date) {
-    const result = await this.dbService.prisma.$queryRaw<
+    return await this.dbService.prisma.$queryRaw<
       activities[]
-    >`select * from "public"."activities" where ${tripType} ILIKE any("tripType") AND "createdAt" > ${after} order by "createdAt" desc`;
-    console.log(result.length);
-    return result;
+    >`select * from "public"."activities" where ${tripType} ILIKE any("tripType") AND "createdAt" > ${after} order by "startsAt" asc`;
   }
 }

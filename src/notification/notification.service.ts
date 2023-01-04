@@ -136,21 +136,29 @@ export class NotificationService {
       if (sub.subscription.type === 'activities') {
         const topic = `${sub.subscription.topic} (${todayString})`;
         const mainMessage = `:point_right: ${sub.news.length} new activities that mention "${sub.subscription.topic}".\n`;
-        const embeds = sub.news.map((activity) => {
-          // return new EmbedBuilder()
-          //   .setTitle(activity.title)
-          //   .setURL(activity.url);
-          return new EmbedBuilder().setTitle('activity').setURL('http://ut.no');
+        const embeds = sub.news.map((news) => {
+          const activity = news as activities;
+          const date = activity.startsAt
+            ? activity.startsAt?.toLocaleDateString('no-NO', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })
+            : '';
+          return new EmbedBuilder()
+            .setTitle(activity.title)
+            .setURL(activity.url)
+            .setDescription(date);
         });
         return { topic: topic, mainMessage: mainMessage, embeds: embeds };
       }
       if (sub.subscription.type === 'cabins') {
         const mainMessage = `:house_with_garden: ${sub.news.length} new cabins:`;
-        const embeds = sub.news.map((cabin) => {
-          // return new EmbedBuilder()
-          //   .setTitle(cabin.name)
-          //   .setURL(`http://ut.no/hytte/${cabin.utId}`);
-          return new EmbedBuilder().setTitle('cabin').setURL('http://ut.no');
+        const embeds = sub.news.map((news) => {
+          const cabin = news as cabins;
+          return new EmbedBuilder()
+            .setTitle(cabin.name)
+            .setURL(`http://ut.no/hytte/${cabin.utId}`);
         });
         return {
           topic: `New cabins (${todayString})`,
