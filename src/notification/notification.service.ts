@@ -59,6 +59,7 @@ export class NotificationService {
         return;
       }
 
+      const checkedAt = new Date();
       const subscriptionsWithNews = await this.findNewsForSubscriptions(
         subscriptions,
       );
@@ -73,7 +74,8 @@ export class NotificationService {
       if (subscriber.subscriberType === 'user') {
         await this.sendNotificationsAsDm(subscriber, messages);
       }
-      // TODO set notifiedAt for all subscriptions of this subscriber
+
+      await this.subscriptionService.updateNotifiedAt(subscriptions, checkedAt);
     });
   }
 
