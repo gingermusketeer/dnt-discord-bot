@@ -16,8 +16,8 @@ type MessageThread = {
 };
 
 @Injectable()
-export class NotificationService {
-  private readonly logger = new Logger(NotificationService.name);
+export class SubscriptionNotifierService {
+  private readonly logger = new Logger(SubscriptionNotifierService.name);
   private task: cron.ScheduledTask;
 
   constructor(

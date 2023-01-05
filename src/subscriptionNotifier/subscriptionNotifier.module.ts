@@ -4,7 +4,7 @@ import { ActivityModule } from 'src/activity/activity.module';
 import { CabinModule } from 'src/cabin/cabin.module';
 import { DiscordModule } from 'src/discord/discord.module';
 import { SubscriptionModule } from 'src/subscription/subscription.module';
-import { NotificationService } from './notification.service';
+import { SubscriptionNotifierService } from './subscriptionNotifier.service';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { NotificationService } from './notification.service';
     DiscordModule,
     SubscriptionModule,
   ],
-  providers: [NotificationService],
-  exports: [NotificationService],
+  providers: [SubscriptionNotifierService],
+  exports: [SubscriptionNotifierService],
 })
-export class NotificationModule {}
+export class SubscriptionNotifierModule {}

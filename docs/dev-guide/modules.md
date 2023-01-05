@@ -5,6 +5,11 @@ Overview over all modules and dependencies.
 ```mermaid
 flowchart BT
 
+AppModule --> BotModule
+AppModule --> ActivityModule
+AppModule --> CabinModule
+AppModule --> DbModule
+AppModule --> SubscriptionNotifierModule
 ActivityModule --> ActivityDatabaseModule
 ActivityModule --> DbModule
 BotModule --> ActivityDatabaseModule
@@ -17,10 +22,10 @@ CabinDatabaseModule --> CabinUtModule
 CabinDatabaseModule --> DbModule
 CabinUtModule --> VisbookModule
 DiscordModule --> SlashCommandModule
-NotificationModule --> DiscordModule
-NotificationModule --> SubscriptionModule
-NotificationModule --> ActivityModule
-NotificationModule --> CabinModule
+SubscriptionNotifierModule --> DiscordModule
+SubscriptionNotifierModule --> SubscriptionModule
+SubscriptionNotifierModule --> ActivityModule
+SubscriptionNotifierModule --> CabinModule
 SlashCommandModule --> CabinModule
 SlashCommandModule --> ChatCommandModule
 SlashCommandModule --> EmbedModule
