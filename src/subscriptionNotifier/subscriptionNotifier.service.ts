@@ -29,7 +29,7 @@ export class SubscriptionNotifierService {
   ) {
     if (this.configService.get('NODE_ENV') === 'production') {
       this.task = cron.schedule('0 16 * * *', this.on4pm);
-      this.logger.log('setup 4pm notifications');
+      this.logger.log('setup 4pm subscription notifier');
     }
   }
 
@@ -37,9 +37,14 @@ export class SubscriptionNotifierService {
     this.logger.log('on4pm');
     this.notifySubscribers()
       .catch((error) => {
-        this.logger.error('Sending notifications failed with error.', error);
+        this.logger.error(
+          'Sending subscription notifications failed with error.',
+          error,
+        );
       })
-      .then(() => this.logger.log('Notifications sent successfully.'));
+      .then(() =>
+        this.logger.log('Subscription notifications sent successfully.'),
+      );
   };
 
   private async notifySubscribers() {
@@ -124,13 +129,14 @@ export class SubscriptionNotifierService {
     }[],
   ): MessageThread[] {
     const subscriberType = subscriptionsWithNews[0].subscription.subscriberType;
-    const today = new Date();
-    const todayString = `${today.getDate()}.${
-      today.getMonth() + 1
-    }.${today.getFullYear()}`;
+    const today = new Date().toLocaleDateString('no-NO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
     const messages = subscriptionsWithNews.map((sub) => {
       if (sub.subscription.type === 'activities') {
-        const topic = `${sub.subscription.topic} (${todayString})`;
+        const topic = `${sub.subscription.topic} (${today})`;
         const mainMessage = `:point_right: ${sub.news.length} new activities that mention "${sub.subscription.topic}".\n`;
         const embeds = sub.news.map((news) => {
           const activity = news as activities;
@@ -157,7 +163,7 @@ export class SubscriptionNotifierService {
             .setURL(`http://ut.no/hytte/${cabin.utId}`);
         });
         return {
-          topic: `New cabins (${todayString})`,
+          topic: `New cabins (${today})`,
           mainMessage: mainMessage,
           embeds: embeds,
         };
@@ -168,7 +174,7 @@ export class SubscriptionNotifierService {
     if (subscriberType === 'user') {
       messages.unshift({
         topic: '',
-        mainMessage: `Hei! Here is your daily digest of ${subscriptionsWithNews.length} active subscriptions. :smiley_cat:\n`,
+        mainMessage: `Hei! I found some new activities related to your subscriptions! :smiley_cat:\n`,
         embeds: [],
       });
     }
