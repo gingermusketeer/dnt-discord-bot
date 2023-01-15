@@ -135,11 +135,10 @@ export class SubscriptionNotifierService {
       year: 'numeric',
     });
     const messages = subscriptionsWithNews.map((sub) => {
-      if (sub.subscription.type === 'activities') {
+      if (this.subscriptionTypeIsActivities(sub.subscription, sub.news)) {
         const topic = `${sub.subscription.topic} (${today})`;
         const mainMessage = `:point_right: ${sub.news.length} new activities that mention "${sub.subscription.topic}".\n`;
-        const embeds = sub.news.map((news) => {
-          const activity = news as activities;
+        const embeds = sub.news.map((activity) => {
           const date = activity.startsAt
             ? activity.startsAt?.toLocaleDateString('no-NO', {
                 month: 'long',
@@ -154,10 +153,9 @@ export class SubscriptionNotifierService {
         });
         return { topic: topic, mainMessage: mainMessage, embeds: embeds };
       }
-      if (sub.subscription.type === 'cabins') {
+      if (this.subscriptionTypeIsCabins(sub.subscription, sub.news)) {
         const mainMessage = `:house_with_garden: ${sub.news.length} new cabins:`;
-        const embeds = sub.news.map((news) => {
-          const cabin = news as cabins;
+        const embeds = sub.news.map((cabin) => {
           return new EmbedBuilder()
             .setTitle(cabin.name)
             .setURL(`http://ut.no/hytte/${cabin.utId}`);
@@ -187,6 +185,20 @@ export class SubscriptionNotifierService {
     }
 
     return messages;
+  }
+
+  private subscriptionTypeIsActivities(
+    subscription: subscriptions,
+    news: activities[] | cabins[],
+  ): news is activities[] {
+    return subscription.type === 'activities';
+  }
+
+  private subscriptionTypeIsCabins(
+    subscription: subscriptions,
+    news: activities[] | cabins[],
+  ): news is cabins[] {
+    return subscription.type === 'cabins';
   }
 
   private async sendNotificationsAsDm(
