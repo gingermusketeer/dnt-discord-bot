@@ -36,15 +36,15 @@ export class SubscriptionNotifierService {
   on4pm = () => {
     this.logger.log('on4pm');
     this.notifySubscribers()
+      .then(() =>
+        this.logger.log('Subscription notifications sent successfully.'),
+      )
       .catch((error) => {
         this.logger.error(
           'Sending subscription notifications failed with error.',
           error,
         );
-      })
-      .then(() =>
-        this.logger.log('Subscription notifications sent successfully.'),
-      );
+      });
   };
 
   private async notifySubscribers() {
